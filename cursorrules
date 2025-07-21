@@ -1,0 +1,35 @@
+# Règles et objectifs du projet Companion
+
+## Objectif principal
+Créer une application web de type "companion" permettant aux utilisateurs de :
+- Suivre la progression de lecture de mes livres/webnovels.
+- Être notifiés lors de la publication d'un nouveau chapitre.
+- Noter les chapitres et laisser des commentaires.
+- Savoir où ils en sont dans chaque histoire (progression, chapitres lus, etc.).
+
+## Fonctionnalités principales
+- Interface utilisateur inspirée de AniList, Letterboxd ou MyAnimeList.
+- Système de comptes/utilisateurs pour sauvegarder la progression.
+- Système de notifications (nouveaux chapitres, réponses aux commentaires, etc.).
+- Système de notation et de commentaires par chapitre.
+- Tableau de bord personnalisé pour chaque utilisateur.
+
+## Données et sources
+- Les données des histoires, chapitres, titres, etc. seront scrappées automatiquement à partir de :
+  - Wattpad
+  - Webnovel
+  - Yume-Arts
+- Un système de scraping devra être mis en place pour récupérer et mettre à jour les données régulièrement.
+
+## Contraintes techniques
+- L'application doit être moderne, responsive et agréable à utiliser.
+- Le code doit être propre, bien documenté et facilement maintenable.
+- Les notifications doivent pouvoir être envoyées par email et/ou via l'application (push notifications si possible).
+
+## Langue
+- L'application et la documentation doivent être en français.
+
+## Sécurité & Respect des données
+- Respecter la vie privée des utilisateurs.
+- Ne pas stocker de données sensibles sans consentement explicite.
+- Respecter les conditions d'utilisation des plateformes sources (Wattpad, Webnovel, Yume-Arts) lors du scraping. 
