@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model utilisateur {
+  id               Int            @id @default(autoincrement())
+  pseudo           String         @db.VarChar(50)
+  email            String         @unique @db.VarChar(100)
+  mot_de_passe     String         @db.VarChar(255)
+  date_inscription DateTime       @default(now()) @db.Timestamp(6)
+  avatar           String?
+  
+  // Relations
+  progressions     progression[]
+  notes            note[]
+  notifications    notification[]
+}
+
+model histoire {
+  id               Int           @id @default(autoincrement())
+  titre            String        @db.VarChar(255)
+  description      String?
+  auteur           String?       @db.VarChar(100)
+  source           String?       @db.VarChar(50)
+  url_source       String?
+  date_publication DateTime?     @db.Timestamp(6)
+  image_couverture String?
+  
+  // Relations
+  chapitres        chapitre[]
+  progressions     progression[]
+}
+
+model chapitre {
+  id               Int       @id @default(autoincrement())
+  histoire_id      Int
+  titre            String?   @db.VarChar(255)
+  numero           Int?
+  contenu          String?
+  date_publication DateTime? @db.Timestamp(6)
+  
+  // Relations
+  histoire         histoire  @relation(fields: [histoire_id], references: [id])
+  notes            note[]
+}
+
+model progression {
+  id                  Int       @id @default(autoincrement())
+  utilisateur_id      Int
+  histoire_id         Int
+  dernier_chapitre_lu Int?
+  date_mise_a_jour    DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relations
+  utilisateur         utilisateur @relation(fields: [utilisateur_id], references: [id])
+  histoire            histoire    @relation(fields: [histoire_id], references: [id])
+}
+
+model note {
+  id             Int       @id @default(autoincrement())
+  utilisateur_id Int
+  chapitre_id    Int
+  note           Int       @db.Integer
+  commentaire    String?
+  date           DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relations
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id])
+  chapitre       chapitre    @relation(fields: [chapitre_id], references: [id])
+  
+  // Contrainte
+  @@map("note")
+}
+
+model notification {
+  id           Int       @id @default(autoincrement())
+  utilisateur_id Int
+  type         String?   @db.VarChar(50)
+  message      String?
+  lu           Boolean   @default(false)
+  date         DateTime  @default(now()) @db.Timestamp(6)
+  
+  // Relations
+  utilisateur  utilisateur @relation(fields: [utilisateur_id], references: [id])
+}
