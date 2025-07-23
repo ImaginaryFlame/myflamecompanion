@@ -12,10 +12,17 @@ export async function GET() {
         notifications: true
       }
     });
-    return NextResponse.json(utilisateurs);
+    return NextResponse.json({
+      success: true,
+      data: utilisateurs,
+      count: utilisateurs.length
+    });
   } catch (error) {
     console.error('Erreur Prisma:', error);
-    return NextResponse.json({ error: 'Erreur de base de données' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Erreur de base de données' 
+    }, { status: 500 });
   }
 }
 

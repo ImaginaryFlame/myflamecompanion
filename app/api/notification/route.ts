@@ -5,23 +5,21 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const chapitres = await prisma.chapitre.findMany({
+    const notifications = await prisma.notification.findMany({
       include: {
-        histoire: true,
-        notes: {
-          include: {
-            utilisateur: true
-          }
-        }
+        utilisateur: true
+      },
+      orderBy: {
+        date: 'desc'
       }
     });
     return NextResponse.json({
       success: true,
-      data: chapitres,
-      count: chapitres.length
+      data: notifications,
+      count: notifications.length
     });
   } catch (error) {
-    console.error('Erreur récupération chapitres:', error);
+    console.error('Erreur récupération notifications:', error);
     return NextResponse.json({ 
       success: false, 
       error: 'Erreur de base de données' 
@@ -32,19 +30,19 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
-    const nouveauChapitre = await prisma.chapitre.create({
+
+    const nouvelleNotification = await prisma.notification.create({
       data: {
-        histoire_id: body.histoire_id,
-        titre: body.titre,
-        numero: body.numero,
-        contenu: body.contenu
+        utilisateur_id: body.utilisateur_id || 1, // Par défaut utilisateur 1
+        type: body.type,
+        message: body.message,
+        lu: body.lu || false
       }
     });
-    
-    return NextResponse.json(nouveauChapitre, { status: 201 });
+
+    return NextResponse.json(nouvelleNotification, { status: 201 });
   } catch (error) {
-    console.error('Erreur création chapitre:', error);
+    console.error('Erreur création notification:', error);
     return NextResponse.json({ error: 'Erreur de création' }, { status: 400 });
   }
 } 

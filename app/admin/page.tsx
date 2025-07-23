@@ -69,7 +69,8 @@ export default function AdminPage() {
     try {
       const response = await fetch('/api/histoire');
       if (response.ok) {
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.success ? result.data : [];
         log(`✅ API accessible - ${data.length} histoires trouvées`);
       } else {
         log(`❌ Erreur API: ${response.status}`);
@@ -139,9 +140,21 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-100 py-8">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
+          <h1 className="text-3xl font-bold text-center text-gray-800 mb-4">
             🚀 Administration - Ajouter les histoires
           </h1>
+          
+          <div className="text-center mb-6">
+            <a
+              href="/admin/centre-controle"
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transform hover:scale-105 transition-all duration-200 inline-block"
+            >
+              🎛️ Centre de Contrôle Avancé
+            </a>
+            <p className="text-sm text-gray-500 mt-2">
+              Interface moderne avec tous tes outils organisés
+            </p>
+          </div>
           
           <div className="text-center space-x-4 mb-8">
             <button

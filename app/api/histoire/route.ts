@@ -15,10 +15,17 @@ export async function GET() {
         }
       }
     });
-    return NextResponse.json(histoires);
+    return NextResponse.json({
+      success: true,
+      data: histoires,
+      count: histoires.length
+    });
   } catch (error) {
     console.error('Erreur récupération histoires:', error);
-    return NextResponse.json({ error: 'Erreur de base de données' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Erreur de base de données' 
+    }, { status: 500 });
   }
 }
 

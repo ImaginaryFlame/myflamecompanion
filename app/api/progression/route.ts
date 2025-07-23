@@ -15,10 +15,17 @@ export async function GET() {
         }
       }
     });
-    return NextResponse.json(progressions);
+    return NextResponse.json({
+      success: true,
+      data: progressions,
+      count: progressions.length
+    });
   } catch (error) {
     console.error('Erreur récupération progressions:', error);
-    return NextResponse.json({ error: 'Erreur de base de données' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Erreur de base de données' 
+    }, { status: 500 });
   }
 }
 

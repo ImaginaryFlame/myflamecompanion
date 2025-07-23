@@ -45,7 +45,8 @@ export default function AdminChapitresPage() {
     try {
       const response = await fetch('/api/histoire');
       if (response.ok) {
-        const data = await response.json();
+        const result = await response.json();
+        const data = result.success ? result.data : [];
         setHistoires(data);
         log(`✅ ${data.length} histoires chargées`);
       } else {

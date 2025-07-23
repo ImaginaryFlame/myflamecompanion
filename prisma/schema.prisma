@@ -10,20 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model utilisateur {
-  id               Int            @id @default(autoincrement())
-  pseudo           String         @db.VarChar(50)
-  email            String         @unique @db.VarChar(100)
-  mot_de_passe     String         @db.VarChar(255)
-  date_inscription DateTime       @default(now()) @db.Timestamp(6)
-  avatar           String?
-  
-  // Relations
-  progressions     progression[]
-  notes            note[]
-  notifications    notification[]
-}
-
 model histoire {
   id               Int           @id @default(autoincrement())
   titre            String        @db.VarChar(255)
@@ -33,61 +19,221 @@ model histoire {
   url_source       String?
   date_publication DateTime?     @db.Timestamp(6)
   image_couverture String?
-  
+  urls_multiples   Json?         // URLs pour Webnovel, Yume-Arts, etc.
+
   // Relations
   chapitres        chapitre[]
   progressions     progression[]
+
+  @@map("histoire")
 }
 
 model chapitre {
   id               Int       @id @default(autoincrement())
   histoire_id      Int
-  titre            String?   @db.VarChar(255)
-  numero           Int?
+  numero_chapitre  Int
+  titre_chapitre   String?   @db.VarChar(255)
   contenu          String?
   date_publication DateTime? @db.Timestamp(6)
-  
+  url_chapitre     String?
+
   // Relations
-  histoire         histoire  @relation(fields: [histoire_id], references: [id])
-  notes            note[]
+  histoire         histoire  @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+  progressions     progression[]
+
+  @@map("chapitre")
+}
+
+model utilisateur {
+  id            Int      @id @default(autoincrement())
+  nom           String   @db.VarChar(100)
+  email         String   @unique @db.VarChar(255)
+  mot_de_passe  String   @db.VarChar(255)
+  date_creation DateTime @default(now()) @db.Timestamp(6)
+  role          String   @default("user") @db.VarChar(20)
+
+  // Relations
+  progressions  progression[]
+  notes         note[]
+  notifications notification[]
+  votes         vote[]
+  abonnements   abonnement[]
+
+  @@map("utilisateur")
 }
 
 model progression {
-  id                  Int       @id @default(autoincrement())
-  utilisateur_id      Int
-  histoire_id         Int
-  dernier_chapitre_lu Int?
-  date_mise_a_jour    DateTime  @default(now()) @db.Timestamp(6)
-  
+  id                    Int      @id @default(autoincrement())
+  utilisateur_id        Int
+  histoire_id           Int
+  chapitre_id           Int?
+  chapitre_lu           Int      @default(0)
+  date_derniere_lecture DateTime @default(now()) @db.Timestamp(6)
+  statut                String   @default("en_cours") @db.VarChar(20)
+
   // Relations
-  utilisateur         utilisateur @relation(fields: [utilisateur_id], references: [id])
-  histoire            histoire    @relation(fields: [histoire_id], references: [id])
+  utilisateur           utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  histoire              histoire    @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+  chapitre              chapitre?   @relation(fields: [chapitre_id], references: [id], onDelete: SetNull)
+
+  @@unique([utilisateur_id, histoire_id])
+  @@map("progression")
 }
 
 model note {
-  id             Int       @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   utilisateur_id Int
-  chapitre_id    Int
-  note           Int       @db.Integer
-  commentaire    String?
-  date           DateTime  @default(now()) @db.Timestamp(6)
-  
+  histoire_id    Int
+  chapitre_id    Int?
+  contenu        String
+  date_creation  DateTime @default(now()) @db.Timestamp(6)
+
   // Relations
-  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id])
-  chapitre       chapitre    @relation(fields: [chapitre_id], references: [id])
-  
-  // Contrainte
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
   @@map("note")
 }
 
 model notification {
-  id           Int       @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   utilisateur_id Int
-  type         String?   @db.VarChar(50)
-  message      String?
-  lu           Boolean   @default(false)
-  date         DateTime  @default(now()) @db.Timestamp(6)
-  
+  titre          String   @db.VarChar(255)
+  message        String
+  type           String   @db.VarChar(50)
+  lu             Boolean  @default(false)
+  date_creation  DateTime @default(now()) @db.Timestamp(6)
+  data_extra     Json?
+
   // Relations
-  utilisateur  utilisateur @relation(fields: [utilisateur_id], references: [id])
+  utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@map("notification")
+}
+
+// === NOUVEAUX MODÈLES YOUTUBE/TWITCH ===
+
+model chaine {
+  id                 Int      @id @default(autoincrement())
+  nom                String   @db.VarChar(100)
+  type               String   @db.VarChar(20) // 'youtube' ou 'twitch'
+  channel_id         String   @unique @db.VarChar(100)
+  nom_affichage      String   @db.VarChar(100)
+  description        String?
+  avatar_url         String?
+  banniere_url       String?
+  url_chaine         String
+  abonnes            Int      @default(0)
+  videos_total       Int      @default(0)
+  vues_total         BigInt   @default(0)
+  actif              Boolean  @default(true)
+  derniere_maj       DateTime @default(now()) @db.Timestamp(6)
+  date_creation      DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  videos             video[]
+  lives              live[]
+  plannings          planning[]
+  abonnements        abonnement[]
+
+  @@map("chaine")
+}
+
+model video {
+  id                 Int      @id @default(autoincrement())
+  chaine_id          Int
+  video_id           String   @unique @db.VarChar(100)
+  titre              String   @db.VarChar(255)
+  description        String?
+  miniature_url      String?
+  duree              Int?     // en secondes
+  vues               BigInt   @default(0)
+  likes              Int      @default(0)
+  commentaires       Int      @default(0)
+  date_publication   DateTime @db.Timestamp(6)
+  date_creation      DateTime @default(now()) @db.Timestamp(6)
+  tags               Json?    // Array de tags
+  categorie          String?  @db.VarChar(50)
+  histoire_liee_id   Int?     // Lien vers une histoire si applicable
+
+  // Relations
+  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+
+  @@map("video")
+}
+
+model live {
+  id                 Int      @id @default(autoincrement())
+  chaine_id          Int
+  live_id            String   @unique @db.VarChar(100)
+  titre              String   @db.VarChar(255)
+  description        String?
+  miniature_url      String?
+  statut             String   @db.VarChar(20) // 'programme', 'en_cours', 'termine'
+  date_debut_prevue  DateTime? @db.Timestamp(6)
+  date_debut_reelle  DateTime? @db.Timestamp(6)
+  date_fin           DateTime? @db.Timestamp(6)
+  spectateurs_max    Int      @default(0)
+  spectateurs_actuel Int      @default(0)
+  url_live           String?
+  histoire_liee_id   Int?     // Lien vers une histoire si applicable
+  date_creation      DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+  votes              vote[]
+
+  @@map("live")
+}
+
+model planning {
+  id                 Int      @id @default(autoincrement())
+  chaine_id          Int
+  type               String   @db.VarChar(20) // 'video' ou 'live'
+  titre              String   @db.VarChar(255)
+  description        String?
+  date_prevue        DateTime @db.Timestamp(6)
+  statut             String   @default("programme") @db.VarChar(20) // 'programme', 'en_cours', 'termine', 'annule'
+  histoire_liee_id   Int?
+  tags               Json?
+  date_creation      DateTime @default(now()) @db.Timestamp(6)
+  date_modification  DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+
+  @@map("planning")
+}
+
+model vote {
+  id                 Int      @id @default(autoincrement())
+  live_id            Int
+  utilisateur_id     Int
+  question           String   @db.VarChar(255)
+  options            Json     // Array des options de vote
+  votes_resultats    Json     // Résultats des votes
+  actif              Boolean  @default(true)
+  date_creation      DateTime @default(now()) @db.Timestamp(6)
+  date_fin           DateTime? @db.Timestamp(6)
+
+  // Relations
+  live               live     @relation(fields: [live_id], references: [id], onDelete: Cascade)
+  utilisateur        utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@map("vote")
+}
+
+model abonnement {
+  id                 Int      @id @default(autoincrement())
+  utilisateur_id     Int
+  chaine_id          Int
+  notifications_video Boolean  @default(true)
+  notifications_live Boolean  @default(true)
+  date_abonnement    DateTime @default(now()) @db.Timestamp(6)
+
+  // Relations
+  utilisateur        utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+
+  @@unique([utilisateur_id, chaine_id])
+  @@map("abonnement")
 }
