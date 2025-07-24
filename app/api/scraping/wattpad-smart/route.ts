@@ -96,7 +96,7 @@ export async function POST(request: Request) {
       where: { url_source: url },
       include: {
         chapitres: {
-          orderBy: { numero: 'asc' }
+          orderBy: { numero_chapitre: 'asc' }
         }
       }
     });
@@ -155,7 +155,7 @@ export async function POST(request: Request) {
           data: dataToSave,
           include: { 
             chapitres: {
-              orderBy: { numero: 'asc' }
+              orderBy: { numero_chapitre: 'asc' }
             }
           }
         });
@@ -166,23 +166,23 @@ export async function POST(request: Request) {
         if (chapitres && chapitres.length > 0) {
           for (const chapitre of chapitres) {
             const chapitreExistant = await prisma.chapitre.findFirst({
-              where: { histoire_id: histoire.id, numero: chapitre.numero }
+              where: { histoire_id: histoire.id, numero_chapitre: chapitre.numero }
             });
             
             if (chapitreExistant) {
               await prisma.chapitre.update({ 
                 where: { id: chapitreExistant.id }, 
                 data: { 
-                  titre: chapitre.titre, 
-                  numero: chapitre.numero,
+                  titre_chapitre: chapitre.titre, 
+                  numero_chapitre: chapitre.numero,
                   url_chapitre: chapitre.url || null
                 } 
               });
             } else {
               await prisma.chapitre.create({ 
                 data: { 
-                  titre: chapitre.titre, 
-                  numero: chapitre.numero, 
+                  titre_chapitre: chapitre.titre, 
+                  numero_chapitre: chapitre.numero, 
                   histoire_id: histoire.id,
                   url_chapitre: chapitre.url || null
                 } 
@@ -204,7 +204,7 @@ export async function POST(request: Request) {
           },
           include: { 
             chapitres: {
-              orderBy: { numero: 'asc' }
+              orderBy: { numero_chapitre: 'asc' }
             }
           }
         });
@@ -218,8 +218,8 @@ export async function POST(request: Request) {
           for (const chapitre of chapitres) {
             await prisma.chapitre.create({
               data: {
-                titre: chapitre.titre,
-                numero: chapitre.numero,
+                titre_chapitre: chapitre.titre,
+                numero_chapitre: chapitre.numero,
                 histoire_id: histoire.id
               }
             });
@@ -235,7 +235,7 @@ export async function POST(request: Request) {
     // Compter les chapitres réels pour le message de retour
     const chapitresFinaux = await prisma.chapitre.findMany({
       where: { histoire_id: histoire.id },
-      orderBy: { numero: 'asc' }
+      orderBy: { numero_chapitre: 'asc' }
     });
 
     const totalChapitres = chapitresFinaux.length;

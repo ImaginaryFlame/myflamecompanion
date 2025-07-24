@@ -15,6 +15,7 @@ export default function CentreControlePage() {
     nouvellesNotifications: 0
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [syncLoading, setSyncLoading] = useState(false);
 
   useEffect(() => {
     chargerStats();
@@ -28,26 +29,46 @@ export default function CentreControlePage() {
         const histoireResult = await histoireResponse.json();
         const histoireData = histoireResult.success ? histoireResult.data : [];
         
-        // Charger les notifications
-        const notifResponse = await fetch('/api/notification');
-        const notifResult = await notifResponse.json();
-        const notifData = notifResult.success ? notifResult.data : [];
-        
-        const totalChapitres = histoireData.reduce((total: number, h: any) => 
-          total + (h.chapitres?.length || 0), 0);
-        
-        const nouvellesNotifications = notifData.filter((n: any) => !n.lu).length;
-        
-        setStats({
-          totalHistoires: histoireData.length,
-          totalChapitres,
-          nouvellesNotifications
-        });
+        // Charger les chapitres
+        const chapitreResponse = await fetch('/api/chapitre');
+        if (chapitreResponse.ok) {
+          const chapitreResult = await chapitreResponse.json();
+          const chapitreData = chapitreResult.success ? chapitreResult.data : [];
+          
+          setStats({
+            totalHistoires: histoireData.length,
+            totalChapitres: chapitreData.length,
+            nouvellesNotifications: 0
+          });
+        }
       }
     } catch (error) {
       console.error('Erreur chargement stats:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const synchroniserChaines = async () => {
+    try {
+      setSyncLoading(true);
+      const response = await fetch('/api/sync/channels', {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          alert('✅ Synchronisation des chaînes réussie ! Toutes les vidéos YouTube et VODs Twitch ont été mises à jour.');
+        } else {
+          alert('❌ Erreur lors de la synchronisation: ' + result.error);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur synchronisation chaînes:', error);
+      alert('❌ Erreur lors de la synchronisation des chaînes');
+    } finally {
+      setSyncLoading(false);
     }
   };
 
@@ -119,6 +140,30 @@ export default function CentreControlePage() {
         url: "/admin/gerer-histoires",
         couleur: "bg-red-500 hover:bg-red-600",
         statut: "⚠️ Prudence"
+      }
+    ],
+    chaines: [
+      {
+        titre: "📺 Gestion des Chaînes",
+        description: "Gérer tes chaînes YouTube et Twitch, statistiques et configuration",
+        url: "/admin/chaines",
+        couleur: "bg-red-500 hover:bg-red-600",
+        statut: "📊 Essentiel"
+      },
+      {
+        titre: "🔄 Synchroniser Vidéos",
+        description: "Synchroniser toutes tes vidéos YouTube et VODs Twitch maintenant",
+        action: synchroniserChaines,
+        couleur: syncLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600",
+        statut: syncLoading ? "🔄 Sync..." : "🚀 Cliquer ici",
+        disabled: syncLoading
+      },
+      {
+        titre: "🧪 Test APIs",
+        description: "Tester les connexions YouTube et Twitch, diagnostiquer les erreurs",
+        url: "/admin/test-apis",
+        couleur: "bg-yellow-500 hover:bg-yellow-600",
+        statut: "🔧 Debug"
       }
     ],
     automatisation: [
@@ -204,6 +249,47 @@ export default function CentreControlePage() {
                   >
                     Ouvrir l'outil →
                   </a>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Chaînes YouTube & Twitch */}
+          <div>
+            <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
+              📺 Chaînes YouTube & Twitch
+              <span className="ml-4 text-sm bg-red-500/20 text-red-300 px-3 py-1 rounded-full">
+                Synchronisation vidéos
+              </span>
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {outils.chaines.map((outil, index) => (
+                <div key={index} className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-xl font-semibold text-white">{outil.titre}</h3>
+                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
+                      {outil.statut}
+                    </span>
+                  </div>
+                  <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+                    {outil.description}
+                  </p>
+                  {outil.action ? (
+                    <button
+                      onClick={outil.action}
+                      disabled={outil.disabled}
+                      className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105 ${outil.disabled ? 'cursor-not-allowed' : ''}`}
+                    >
+                      {outil.disabled ? 'Synchronisation...' : 'Synchroniser maintenant →'}
+                    </button>
+                  ) : (
+                    <a
+                      href={outil.url}
+                      className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105`}
+                    >
+                      Ouvrir l'outil →
+                    </a>
+                  )}
                 </div>
               ))}
             </div>

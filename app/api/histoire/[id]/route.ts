@@ -119,12 +119,10 @@ export async function DELETE(
     // Supprimer d'abord tous les éléments liés (cascade)
     console.log(`🗑️ Suppression de l'histoire ID ${id} et de ses dépendances...`);
 
-    // Supprimer les notes liées aux chapitres de cette histoire
+    // Supprimer les notes liées à cette histoire
     await prisma.note.deleteMany({
       where: {
-        chapitre: {
-          histoire_id: id
-        }
+        histoire_id: id
       }
     });
 
@@ -135,7 +133,7 @@ export async function DELETE(
       }
     });
 
-    // Supprimer tous les chapitres de cette histoire
+    // Supprimer les chapitres de cette histoire (les notes liées aux chapitres seront supprimées automatiquement)
     await prisma.chapitre.deleteMany({
       where: {
         histoire_id: id
@@ -143,18 +141,15 @@ export async function DELETE(
     });
 
     // Enfin, supprimer l'histoire elle-même
-    const histoireSupprimee = await prisma.histoire.delete({
+    await prisma.histoire.delete({
       where: { id }
     });
 
-    console.log(`✅ Histoire "${histoireSupprimee.titre}" supprimée avec succès`);
+    console.log(`✅ Histoire ID ${id} supprimée avec succès`);
 
     return NextResponse.json({ 
-      message: 'Histoire supprimée avec succès',
-      histoire: {
-        id: histoireSupprimee.id,
-        titre: histoireSupprimee.titre
-      }
+      success: true,
+      message: 'Histoire supprimée avec succès' 
     });
   } catch (error) {
     console.error('Erreur suppression histoire:', error);

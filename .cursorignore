@@ -1,0 +1,25 @@
+# Fichiers que Cursor peut lire/modifier
+!.env
+!.env.local
+!.env.example
+
+# Répertoires à ignorer
+node_modules/
+.next/
+.git/
+dist/
+build/
+
+# Fichiers temporaires
+*.log
+*.tmp
+*.temp
+
+# Bases de données
+*.db
+*.sqlite
+*.sqlite3
+
+# Fichiers de cache
+.cache/
+.turbo/ 

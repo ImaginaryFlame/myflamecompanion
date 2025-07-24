@@ -3,19 +3,17 @@
     {
       "path": "/api/cron/auto-check",
       "schedule": "0 1 * * *"
+    },
+    {
+      "path": "/api/cron/sync-channels",
+      "schedule": "*/30 * * * *"
     }
   ],
   "functions": {
-    "app/api/cron/auto-check/route.ts": {
+    "app/api/scraping/**/*.ts": {
       "maxDuration": 300
     },
-    "app/api/auto-check/route.ts": {
-      "maxDuration": 300
-    },
-    "app/api/scraping/wattpad-smart/route.ts": {
-      "maxDuration": 60
-    },
-    "app/api/scraping/profil-wattpad/route.ts": {
+    "app/api/sync/**/*.ts": {
       "maxDuration": 300
     }
   }

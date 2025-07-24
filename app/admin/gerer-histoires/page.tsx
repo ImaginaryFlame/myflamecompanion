@@ -64,14 +64,18 @@ export default function AdminGererHistoiresPage() {
 
       if (response.ok) {
         const result = await response.json();
-        log(`✅ Histoire supprimée: ${result.histoire.titre}`);
+        if (result.success) {
+          log(`✅ ${result.message}`);
+        } else {
+          log(`❌ Erreur: ${result.error || 'Erreur inconnue'}`);
+        }
         
         // Recharger la liste
         await chargerHistoires();
         setHistoireASupprimer(null);
       } else {
         const error = await response.json();
-        log(`❌ Erreur suppression: ${error.error}`);
+        log(`❌ Erreur suppression: ${error.error || 'Erreur lors de la suppression'}`);
       }
     } catch (error) {
       log(`❌ Erreur réseau: ${error instanceof Error ? error.message : 'Erreur inconnue'}`);

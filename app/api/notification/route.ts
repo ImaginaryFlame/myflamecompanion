@@ -10,7 +10,7 @@ export async function GET() {
         utilisateur: true
       },
       orderBy: {
-        date: 'desc'
+        date_creation: 'desc'
       }
     });
     return NextResponse.json({

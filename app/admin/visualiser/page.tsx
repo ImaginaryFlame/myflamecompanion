@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 
 interface Chapitre {
   id: number;
-  titre: string;
-  numero: number;
+  titre_chapitre: string;
+  numero_chapitre: number;
   url_chapitre?: string;
 }
 
@@ -165,7 +165,7 @@ export default function VisualiseurAdmin() {
                   {histoireSelectionnee.chapitres && histoireSelectionnee.chapitres.length > 0 ? (
                     <div className="max-h-96 overflow-y-auto space-y-2">
                       {histoireSelectionnee.chapitres
-                        .sort((a, b) => (a.numero || 0) - (b.numero || 0))
+                        .sort((a, b) => (a.numero_chapitre || 0) - (b.numero_chapitre || 0))
                         .map((chapitre) => (
                           <div
                             key={chapitre.id}
@@ -174,10 +174,10 @@ export default function VisualiseurAdmin() {
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-gray-500">
-                                  #{chapitre.numero}
+                                  #{chapitre.numero_chapitre}
                                 </span>
                                 <span className="text-sm text-gray-900">
-                                  {chapitre.titre || 'Titre non défini'}
+                                  {chapitre.titre_chapitre || 'Titre non défini'}
                                 </span>
                               </div>
                             </div>

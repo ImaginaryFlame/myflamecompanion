@@ -8,11 +8,7 @@ export async function GET() {
     const chapitres = await prisma.chapitre.findMany({
       include: {
         histoire: true,
-        notes: {
-          include: {
-            utilisateur: true
-          }
-        }
+        progressions: true
       }
     });
     return NextResponse.json({

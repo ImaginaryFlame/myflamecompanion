@@ -13,45 +13,109 @@ interface Chaine {
   actif: boolean;
 }
 
+interface Video {
+  id: string;
+  titre: string;
+  description: string;
+  miniature_url: string;
+  duree: number;
+  date_publication: string;
+  vues: number;
+  chaine: {
+    id: number;
+    nom: string;
+    type: string;
+    nom_affichage: string;
+    avatar_url: string;
+  };
+}
+
+interface Live {
+  id: string;
+  titre: string;
+  description: string;
+  statut: string;
+  date_debut_reelle?: string;
+  date_debut_prevue?: string;
+  url_live?: string;
+  chaine: {
+    id: number;
+    nom: string;
+    type: string;
+    nom_affichage: string;
+    url_chaine: string;
+  };
+}
+
+interface PlanningItem {
+  titre: string;
+  date_prevue: string;
+  type: 'video' | 'live' | 'article';
+  statut: 'planifie' | 'en_cours' | 'publie' | 'annule';
+  description?: string;
+}
+
 export default function ChainesPage() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'videos' | 'lives' | 'planning'>('overview');
   const [chaines, setChaines] = useState<Chaine[]>([]);
+  const [videosYoutube, setVideosYoutube] = useState<Video[]>([]);
+  const [videosTwitch, setVideosTwitch] = useState<Video[]>([]);
+  const [lives, setLives] = useState<Live[]>([]);
+  const [planning, setPlanning] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'overview' | 'videos' | 'lives' | 'planning'>('overview');
 
   useEffect(() => {
     const chargerDonnees = async () => {
       try {
         setIsLoading(true);
         
-        // Données mockées simples
-        const chainesData: Chaine[] = [
-          {
-            id: 1,
-            nom: 'ImaginaryFlame',
-            type: 'youtube',
-            nom_affichage: 'ImaginaryFlame - Histoires Imaginaires',
-            description: 'Chaîne dédiée aux histoires fantastiques',
-            url_chaine: 'https://youtube.com/@imaginaryflame',
-            abonnes: 1250,
-            actif: true
-          },
-          {
-            id: 2,
-            nom: 'ImaginaryFlame',
-            type: 'twitch',
-            nom_affichage: 'ImaginaryFlame Live',
-            description: 'Lives d\'écriture et discussions',
-            url_chaine: 'https://twitch.tv/imaginaryflame',
-            abonnes: 680,
-            actif: true
+        // Chargement des chaînes
+        const chainesResponse = await fetch('/api/chaines');
+        if (chainesResponse.ok) {
+          const chainesResult = await chainesResponse.json();
+          if (chainesResult.success) {
+            setChaines(chainesResult.data);
           }
-        ];
+        }
 
-        setTimeout(() => {
-          setChaines(chainesData);
-          setIsLoading(false);
-        }, 500);
+        // Chargement des vidéos YouTube (excluant les Shorts)
+        const timestamp = Date.now();
+        const videosYoutubeResponse = await fetch(`/api/chaines/videos?type=youtube&_t=${timestamp}`);
+        if (videosYoutubeResponse.ok) {
+          const videosResult = await videosYoutubeResponse.json();
+          if (videosResult.success) {
+            setVideosYoutube(videosResult.data);
+          }
+        }
 
+        // Chargement des VODs Twitch
+        const videosTwitchResponse = await fetch(`/api/chaines/videos?type=twitch&_t=${timestamp}`);
+        if (videosTwitchResponse.ok) {
+          const videosResult = await videosTwitchResponse.json();
+          if (videosResult.success) {
+            setVideosTwitch(videosResult.data);
+          }
+        }
+
+        // Chargement des lives
+        const livesResponse = await fetch(`/api/chaines/lives?type=youtube&_t=${timestamp}`);
+        if (livesResponse.ok) {
+          const livesResult = await livesResponse.json();
+          if (livesResult.success) {
+            setLives(livesResult.data);
+          }
+        }
+
+        // Chargement du planning
+        const planningResponse = await fetch(`/api/chaines/planning?type=youtube&_t=${timestamp}`);
+        if (planningResponse.ok) {
+          const planningResult = await planningResponse.json();
+          if (planningResult.success) {
+            setPlanning(planningResult.data);
+          }
+        }
+
+        setIsLoading(false);
       } catch (error) {
         console.error('Erreur chargement données:', error);
         setIsLoading(false);
@@ -207,20 +271,35 @@ export default function ChainesPage() {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-semibold text-gray-800 mb-4">🔴 Lives & Prochains Événements</h2>
               
-              <div className="mb-6">
-                <div className="bg-gradient-to-r from-red-500 to-purple-500 text-white p-4 rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-semibold">🔴 LIVE EN COURS</h3>
-                      <p className="text-sm opacity-90">Écriture en direct - Chapitre 15</p>
-                      <p className="text-xs opacity-75 mt-1">👥 247 spectateurs</p>
-                    </div>
-                    <button className="bg-white text-red-500 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100">
-                      🚀 Rejoindre
-                    </button>
-                  </div>
+              {lives.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="text-4xl mb-2">📡</div>
+                  <p>Aucun live en cours</p>
+                  <p className="text-sm">Les lives apparaîtront ici quand tu seras en direct</p>
                 </div>
-              </div>
+              ) : (
+                <div className="mb-6">
+                  {lives.map(live => (
+                    <div key={live.id} className="bg-gradient-to-r from-red-500 to-purple-500 text-white p-4 rounded-lg mb-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold">🔴 LIVE EN COURS</h3>
+                          <p className="text-sm opacity-90">{live.titre}</p>
+                          <p className="text-xs opacity-75 mt-1">👥 En direct</p>
+                        </div>
+                        <a 
+                          href={live.url_live || live.chaine.url_chaine}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-white text-red-500 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100"
+                        >
+                          🚀 Rejoindre
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="space-y-3">
                 <h3 className="font-semibold text-gray-700">📅 Prochains Lives</h3>
@@ -243,23 +322,286 @@ export default function ChainesPage() {
         )}
 
         {activeTab === 'videos' && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">📹 Mes Dernières Vidéos</h2>
-            <p className="text-gray-600">Section vidéos en cours de développement...</p>
+          <div className="space-y-8">
+            
+            {/* Section Vidéos YouTube */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  🔴 Mes Vidéos YouTube
+                </h2>
+                <span className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                  ✅ Shorts exclus (≥1.5min)
+                </span>
+              </div>
+              
+              {videosYoutube.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="text-4xl mb-2">📺</div>
+                  <p>Aucune vidéo YouTube</p>
+                  <p className="text-sm">Toutes les vidéos ≥ 1.5 minutes, Shorts exclus</p>
+                </div>
+              ) : (
+                <>
+                  <p className="text-sm text-gray-600 mb-4">
+                    {videosYoutube.length} vidéo{videosYoutube.length > 1 ? 's' : ''} longue{videosYoutube.length > 1 ? 's' : ''} 
+                    (durée ≥ 2 minutes, Shorts exclus)
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {videosYoutube.map(video => (
+                      <div key={`youtube-${video.id}`} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                        {video.miniature_url && (
+                          <img 
+                            src={video.miniature_url} 
+                            alt={video.titre}
+                            className="w-full h-48 object-cover"
+                          />
+                        )}
+                        
+                        <div className="p-4">
+                          <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                            {video.titre}
+                          </h3>
+                          
+                          <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                            <span className="px-2 py-1 rounded text-xs bg-red-100 text-red-700">
+                              {video.chaine.nom_affichage}
+                            </span>
+                            {video.duree && (
+                              <span className="text-xs text-gray-500">
+                                {Math.floor(video.duree / 60)}:{(video.duree % 60).toString().padStart(2, '0')}
+                              </span>
+                            )}
+                          </div>
+                          
+                          <div className="flex justify-between items-center text-sm text-gray-500">
+                            <span>👀 {video.vues.toLocaleString()}</span>
+                            <span>📅 {new Date(video.date_publication).toLocaleDateString('fr-FR')}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Section VODs Twitch */}
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-6">
+                🟣 Mes VODs Twitch
+              </h2>
+              
+              {videosTwitch.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <div className="text-4xl mb-2">🎮</div>
+                  <p>Aucune VOD Twitch</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {videosTwitch.map(video => (
+                    <div key={`twitch-${video.id}`} className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow">
+                      {video.miniature_url && (
+                        <img 
+                          src={video.miniature_url} 
+                          alt={video.titre}
+                          className="w-full h-48 object-cover"
+                        />
+                      )}
+                      
+                      <div className="p-4">
+                        <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2">
+                          {video.titre}
+                        </h3>
+                        
+                        <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
+                          <span className="px-2 py-1 rounded text-xs bg-purple-100 text-purple-700">
+                            {video.chaine.nom_affichage}
+                          </span>
+                          {video.duree && (
+                            <span className="text-xs text-gray-500">
+                              {Math.floor(video.duree / 60)}:{(video.duree % 60).toString().padStart(2, '0')}
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="flex justify-between items-center text-sm text-gray-500">
+                          <span>👀 {video.vues.toLocaleString()}</span>
+                          <span>📅 {new Date(video.date_publication).toLocaleDateString('fr-FR')}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
         {activeTab === 'lives' && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">🔴 Gestion des Lives</h2>
-            <p className="text-gray-600">Section lives en cours de développement...</p>
+            <h2 className="text-xl font-semibold text-gray-800 mb-6">🔴 Mes Lives</h2>
+            
+            {lives.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">📡</div>
+                <p>Aucun live en cours</p>
+                <p className="text-sm">Les lives apparaîtront ici quand tu seras en direct</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {lives.map(live => (
+                  <div key={live.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 rounded-full bg-red-500 flex items-center justify-center text-white text-xl animate-pulse">
+                        🔴
+                      </div>
+                      
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800">{live.titre}</h3>
+                        <div className="flex items-center space-x-2 text-sm text-gray-600">
+                          <span className="px-2 py-1 rounded text-xs bg-red-100 text-red-700">
+                            {live.chaine.nom_affichage}
+                          </span>
+                          <span className="text-green-600 font-medium">● EN DIRECT</span>
+                        </div>
+                        
+                        {live.date_debut_reelle && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            Débuté le {new Date(live.date_debut_reelle).toLocaleString('fr-FR')}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="text-right">
+                        <a 
+                          href={live.url_live || live.chaine.url_chaine} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+                        >
+                          🔴 Regarder
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {activeTab === 'planning' && (
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6">📅 Planning de Contenu</h2>
-            <p className="text-gray-600">Section planning en cours de développement...</p>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-semibold text-gray-800">📅 Planning de Contenu</h2>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                ➕ Nouveau Planning
+              </button>
+            </div>
+            
+            {planning.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <div className="text-4xl mb-2">📅</div>
+                <p>Aucun planning configuré</p>
+                <p className="text-sm mb-4">Créez votre planning de contenu pour organiser vos publications</p>
+                <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                  📝 Créer mon premier planning
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {planning.map((item, index) => (
+                  <div key={index} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-800">{item.titre}</h3>
+                        <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
+                          <span className="flex items-center">
+                            📅 {new Date(item.date_prevue).toLocaleDateString('fr-FR')}
+                          </span>
+                          <span className="flex items-center">
+                            ⏰ {new Date(item.date_prevue).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}
+                          </span>
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            item.type === 'video' ? 'bg-red-100 text-red-700' :
+                            item.type === 'live' ? 'bg-purple-100 text-purple-700' :
+                            'bg-blue-100 text-blue-700'
+                          }`}>
+                            {item.type === 'video' ? '📹 Vidéo' : 
+                             item.type === 'live' ? '🔴 Live' : '📝 Article'}
+                          </span>
+                          <span className={`px-2 py-1 rounded text-xs ${
+                            item.statut === 'planifie' ? 'bg-yellow-100 text-yellow-700' :
+                            item.statut === 'en_cours' ? 'bg-blue-100 text-blue-700' :
+                            item.statut === 'publie' ? 'bg-green-100 text-green-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {item.statut === 'planifie' ? '⏳ Planifié' :
+                             item.statut === 'en_cours' ? '🔄 En cours' :
+                             item.statut === 'publie' ? '✅ Publié' : '❌ Annulé'}
+                          </span>
+                        </div>
+                        {item.description && (
+                          <p className="text-sm text-gray-600 mt-2">{item.description}</p>
+                        )}
+                      </div>
+                      <div className="flex space-x-2">
+                        <button className="text-blue-500 hover:text-blue-700 px-3 py-1 rounded border border-blue-300 hover:border-blue-500 transition-colors">
+                          ✏️ Modifier
+                        </button>
+                        <button className="text-red-500 hover:text-red-700 px-3 py-1 rounded border border-red-300 hover:border-red-500 transition-colors">
+                          🗑️ Supprimer
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* Section de création rapide */}
+            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold text-gray-800 mb-4">🚀 Création Rapide</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Titre</label>
+                  <input 
+                    type="text" 
+                    placeholder="Ex: Nouveau chapitre Magi"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Date & Heure</label>
+                  <input 
+                    type="datetime-local"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Type</label>
+                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    <option value="video">📹 Vidéo YouTube</option>
+                    <option value="live">🔴 Live Twitch</option>
+                    <option value="article">📝 Article/Post</option>
+                  </select>
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">Description (optionnel)</label>
+                <textarea 
+                  placeholder="Détails sur le contenu prévu..."
+                  rows={2}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                ></textarea>
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                  ➕ Ajouter au Planning
+                </button>
+              </div>
+            </div>
           </div>
         )}
 

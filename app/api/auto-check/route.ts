@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       },
       include: {
         chapitres: {
-          orderBy: { numero: 'asc' }
+          orderBy: { numero_chapitre: 'asc' }
         }
       }
     });
