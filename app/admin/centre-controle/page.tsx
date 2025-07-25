@@ -6,16 +6,48 @@ interface Stats {
   totalHistoires: number;
   totalChapitres: number;
   nouvellesNotifications: number;
+  // Statistiques YouTube
+  chainesYouTube: number;
+  videosYouTube: number;
+  vuesYouTube: number;
+  abonnesYouTube: number;
+  // Statistiques Twitch
+  chainesTwitch: number;
+  vodsTwitch: number;
+  vuesTwitch: number;
+  abonnesTwitch: number;
+}
+
+interface Chaine {
+  id: number;
+  nom: string;
+  plateforme: string;
+  abonnes: number;
+  vues_total: number;
+  derniere_maj: string;
 }
 
 export default function CentreControlePage() {
   const [stats, setStats] = useState<Stats>({
     totalHistoires: 0,
     totalChapitres: 0,
-    nouvellesNotifications: 0
+    nouvellesNotifications: 0,
+    // YouTube
+    chainesYouTube: 0,
+    videosYouTube: 0,
+    vuesYouTube: 0,
+    abonnesYouTube: 0,
+    // Twitch
+    chainesTwitch: 0,
+    vodsTwitch: 0,
+    vuesTwitch: 0,
+    abonnesTwitch: 0
   });
+  const [chaines, setChaines] = useState<Chaine[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [syncLoading, setSyncLoading] = useState(false);
+  const [scrapingLoading, setScrapingLoading] = useState(false);
+  const [autoCheckLoading, setAutoCheckLoading] = useState(false);
 
   useEffect(() => {
     chargerStats();
@@ -23,25 +55,67 @@ export default function CentreControlePage() {
 
   const chargerStats = async () => {
     try {
+      setIsLoading(true);
+
       // Charger les histoires
       const histoireResponse = await fetch('/api/histoire');
-      if (histoireResponse.ok) {
-        const histoireResult = await histoireResponse.json();
-        const histoireData = histoireResult.success ? histoireResult.data : [];
-        
-        // Charger les chapitres
-        const chapitreResponse = await fetch('/api/chapitre');
-        if (chapitreResponse.ok) {
-          const chapitreResult = await chapitreResponse.json();
-          const chapitreData = chapitreResult.success ? chapitreResult.data : [];
-          
-          setStats({
-            totalHistoires: histoireData.length,
-            totalChapitres: chapitreData.length,
-            nouvellesNotifications: 0
-          });
-        }
-      }
+      const histoireResult = histoireResponse.ok ? await histoireResponse.json() : { success: false };
+      const histoireData = histoireResult.success ? histoireResult.data : [];
+
+      // Charger les chapitres
+      const chapitreResponse = await fetch('/api/chapitre');
+      const chapitreResult = chapitreResponse.ok ? await chapitreResponse.json() : { success: false };
+      const chapitreData = chapitreResult.success ? chapitreResult.data : [];
+
+      // Charger les notifications
+      const notifResponse = await fetch('/api/notification');
+      const notifResult = notifResponse.ok ? await notifResponse.json() : { success: false };
+      const notifData = notifResult.success ? notifResult.data : [];
+
+      // Charger les chaînes
+      const chainesResponse = await fetch('/api/chaines');
+      const chainesResult = chainesResponse.ok ? await chainesResponse.json() : { success: false };
+      const chainesData = chainesResult.success ? chainesResult.data : [];
+      setChaines(chainesData);
+
+      // Charger les vidéos YouTube
+      const youtubeResponse = await fetch('/api/chaines/videos?type=youtube');
+      const youtubeResult = youtubeResponse.ok ? await youtubeResponse.json() : { success: false };
+      const youtubeData = youtubeResult.success ? youtubeResult.data : [];
+
+      // Charger les VODs Twitch
+      const twitchResponse = await fetch('/api/chaines/videos?type=twitch');
+      const twitchResult = twitchResponse.ok ? await twitchResponse.json() : { success: false };
+      const twitchData = twitchResult.success ? twitchResult.data : [];
+
+      // Calculer les stats séparées par plateforme
+      const nouvellesNotifications = notifData.filter((n: any) => !n.lu).length;
+
+      // Statistiques par plateforme
+      const chainesYouTube = chainesData.filter((c: any) => c.plateforme === 'youtube');
+      const chainesTwitch = chainesData.filter((c: any) => c.plateforme === 'twitch');
+
+      const vuesYouTube = chainesYouTube.reduce((acc: number, c: any) => acc + (Number(c.vues_total) || 0), 0);
+      const abonnesYouTube = chainesYouTube.reduce((acc: number, c: any) => acc + (Number(c.abonnes) || 0), 0);
+
+      const vuesTwitch = chainesTwitch.reduce((acc: number, c: any) => acc + (Number(c.vues_total) || 0), 0);
+      const abonnesTwitch = chainesTwitch.reduce((acc: number, c: any) => acc + (Number(c.abonnes) || 0), 0);
+
+      setStats({
+        totalHistoires: histoireData.length,
+        totalChapitres: chapitreData.length,
+        nouvellesNotifications,
+        // YouTube
+        chainesYouTube: chainesYouTube.length,
+        videosYouTube: youtubeData.length,
+        vuesYouTube,
+        abonnesYouTube,
+        // Twitch
+        chainesTwitch: chainesTwitch.length,
+        vodsTwitch: twitchData.length,
+        vuesTwitch,
+        abonnesTwitch
+      });
     } catch (error) {
       console.error('Erreur chargement stats:', error);
     } finally {
@@ -49,7 +123,37 @@ export default function CentreControlePage() {
     }
   };
 
-  const synchroniserChaines = async () => {
+  // Fonction pour formater les nombres
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return num.toString();
+  };
+
+  // Actions de contrôle
+  const declencherAutoCheck = async () => {
+    try {
+      setAutoCheckLoading(true);
+      const response = await fetch('/api/auto-check', {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ Vérification terminée !\n${data.totalNouveauxChapitres} nouveaux chapitres détectés`);
+        await chargerStats();
+      } else {
+        alert('❌ Erreur lors de la vérification automatique');
+      }
+    } catch (error) {
+      console.error('Erreur auto-check:', error);
+      alert('❌ Erreur réseau');
+    } finally {
+      setAutoCheckLoading(false);
+    }
+  };
+
+  const synchroniserToutesChaines = async () => {
     try {
       setSyncLoading(true);
       const response = await fetch('/api/sync/channels', {
@@ -57,394 +161,444 @@ export default function CentreControlePage() {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        if (result.success) {
-          alert('✅ Synchronisation des chaînes réussie ! Toutes les vidéos YouTube et VODs Twitch ont été mises à jour.');
-        } else {
-          alert('❌ Erreur lors de la synchronisation: ' + result.error);
-        }
+        const data = await response.json();
+        alert(`✅ Synchronisation terminée !\nYouTube: ${data.youtube?.updated || 0} chaînes\nTwitch: ${data.twitch?.updated || 0} chaînes\nVidéos: ${data.videos?.created || 0} nouvelles`);
+        await chargerStats();
+      } else {
+        alert('❌ Erreur lors de la synchronisation');
       }
     } catch (error) {
-      console.error('Erreur synchronisation chaînes:', error);
-      alert('❌ Erreur lors de la synchronisation des chaînes');
+      console.error('Erreur synchronisation:', error);
+      alert('❌ Erreur réseau');
     } finally {
       setSyncLoading(false);
     }
   };
 
-  const outils = {
-    scraping: [
-      {
-        titre: "🧠 Scraping Intelligent",
-        description: "Scraper une histoire Wattpad avec multi-méthodes (Playwright + Cheerio + Fallback)",
-        url: "/admin/scraping",
-        couleur: "bg-blue-500 hover:bg-blue-600",
-        statut: "✅ Opérationnel"
-      },
-      {
-        titre: "🧪 Test de Scraping",
-        description: "Tester et déboguer les sélecteurs CSS pour le scraping Wattpad",
-        url: "/admin/test-scraping",
-        couleur: "bg-yellow-500 hover:bg-yellow-600",
-        statut: "🔧 Debug"
-      },
-      {
-        titre: "👤 Scraping de Profil",
-        description: "Scraper toutes les histoires d'un profil Wattpad automatiquement",
-        url: "/admin/scraping",
-        couleur: "bg-purple-500 hover:bg-purple-600",
-        statut: "✅ Opérationnel"
+  const lancerScrapingComplet = async () => {
+    try {
+      setScrapingLoading(true);
+      const response = await fetch('/api/scraping/full-sync', {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(`✅ Scraping complet terminé !\nHistoires: ${data.histoires?.updated || 0} mises à jour\nChaînes: ${data.chaines?.synced || 0} synchronisées`);
+        await chargerStats();
+      } else {
+        alert('❌ Erreur lors du scraping complet');
       }
-    ],
-    edition: [
-      {
-        titre: "✏️ Éditeur d'Histoires",
-        description: "Modifier titre, auteur, description et URLs multiples de tes histoires",
-        url: "/admin/editeur",
-        couleur: "bg-green-500 hover:bg-green-600",
-        statut: "✅ Recommandé"
-      },
-      {
-        titre: "📝 Corriger les Chapitres",
-        description: "Corriger les titres de chapitres inventés par le scraping",
-        url: "/admin/corriger-chapitres",
-        couleur: "bg-orange-500 hover:bg-orange-600",
-        statut: "🔧 Utile"
-      },
-      {
-        titre: "➕ Ajouter des Chapitres",
-        description: "Ajouter manuellement des chapitres à une histoire",
-        url: "/admin/chapitres",
-        couleur: "bg-teal-500 hover:bg-teal-600",
-        statut: "📝 Manuel"
-      },
-      {
-        titre: "🏛️ Gestionnaire de Tomes",
-        description: "Gérer les licences regroupées (Webnovel & Yume-Arts)",
-        url: "/admin/gestionnaire-tomes",
-        couleur: "bg-purple-500 hover:bg-purple-600",
-        statut: "🔗 Multi-sites"
-      }
-    ],
-    visualisation: [
-      {
-        titre: "👁️ Visualiseur Avancé",
-        description: "Voir toutes tes histoires avec chapitres et URLs de chapitres",
-        url: "/admin/visualiser",
-        couleur: "bg-indigo-500 hover:bg-indigo-600",
-        statut: "👀 Essentiel"
-      },
-      {
-        titre: "🗂️ Gestionnaire d'Histoires",
-        description: "Supprimer des histoires et gérer la base de données",
-        url: "/admin/gerer-histoires",
-        couleur: "bg-red-500 hover:bg-red-600",
-        statut: "⚠️ Prudence"
-      }
-    ],
-    chaines: [
-      {
-        titre: "📺 Gestion des Chaînes",
-        description: "Gérer tes chaînes YouTube et Twitch, statistiques et configuration",
-        url: "/admin/chaines",
-        couleur: "bg-red-500 hover:bg-red-600",
-        statut: "📊 Essentiel"
-      },
-      {
-        titre: "🔄 Synchroniser Vidéos",
-        description: "Synchroniser toutes tes vidéos YouTube et VODs Twitch maintenant",
-        action: synchroniserChaines,
-        couleur: syncLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600",
-        statut: syncLoading ? "🔄 Sync..." : "🚀 Cliquer ici",
-        disabled: syncLoading
-      },
-      {
-        titre: "🧪 Test APIs",
-        description: "Tester les connexions YouTube et Twitch, diagnostiquer les erreurs",
-        url: "/admin/test-apis",
-        couleur: "bg-yellow-500 hover:bg-yellow-600",
-        statut: "🔧 Debug"
-      }
-    ],
-    automatisation: [
-      {
-        titre: "🤖 Vérification Auto",
-        description: "Déclencher manuellement la vérification de nouveaux chapitres",
-        url: "/admin/dashboard",
-        couleur: "bg-cyan-500 hover:bg-cyan-600",
-        statut: "🔄 Auto 1h"
-      },
-      {
-        titre: "📊 Dashboard Admin",
-        description: "Statistiques temps réel et monitoring du système",
-        url: "/admin/dashboard",
-        couleur: "bg-gray-600 hover:bg-gray-700",
-        statut: "📈 Monitoring"
-      }
-    ]
+    } catch (error) {
+      console.error('Erreur scraping:', error);
+      alert('❌ Erreur réseau');
+    } finally {
+      setScrapingLoading(false);
+    }
   };
 
+  const nettoyerCache = async () => {
+    try {
+      const response = await fetch('/api/cache/clear', {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        alert('✅ Cache nettoyé avec succès !');
+      } else {
+        alert('❌ Erreur lors du nettoyage du cache');
+      }
+    } catch (error) {
+      console.error('Erreur nettoyage cache:', error);
+      alert('❌ Erreur réseau');
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Chargement du centre de contrôle...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4">
-            🎛️ Centre de Contrôle Admin
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* En-tête */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            🎛️ Centre de Contrôle Avancé
           </h1>
-          <p className="text-xl text-gray-300 mb-8">
-            Tous tes outils de gestion MyFlameCompanion en un seul endroit
+          <p className="text-gray-600">
+            Contrôle total du système MyFlameCompanion - Histoires, Chaînes et Synchronisations
           </p>
-          
-          {/* Stats rapides */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-white">
-              <div className="text-3xl font-bold text-blue-400">
-                {isLoading ? '...' : stats.totalHistoires}
+        </div>
+
+        {/* Statistiques principales */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-6 mb-8">
+          {/* Wattpad */}
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">📚</span>
               </div>
-              <div className="text-sm text-gray-300">📚 Histoires</div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Histoires</p>
+                <p className="text-2xl font-bold">{stats.totalHistoires}</p>
+              </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-white">
-              <div className="text-3xl font-bold text-green-400">
-                {isLoading ? '...' : stats.totalChapitres}
+          </div>
+
+          <div className="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">📖</span>
               </div>
-              <div className="text-sm text-gray-300">📖 Chapitres</div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Chapitres</p>
+                <p className="text-2xl font-bold">{stats.totalChapitres}</p>
+              </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-6 text-white">
-              <div className="text-3xl font-bold text-yellow-400">
-                {isLoading ? '...' : stats.nouvellesNotifications}
+          </div>
+
+          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">🔔</span>
               </div>
-              <div className="text-sm text-gray-300">🔔 Notifications</div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Notifications</p>
+                <p className="text-2xl font-bold">{stats.nouvellesNotifications}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* YouTube Stats */}
+          <div className="bg-gradient-to-br from-red-500 to-red-600 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">🎥</span>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Vidéos YT</p>
+                <p className="text-2xl font-bold">{stats.videosYouTube}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-400 to-red-500 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">👀</span>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Vues YT</p>
+                <p className="text-2xl font-bold">{formatNumber(stats.vuesYouTube)}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-600 to-red-700 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">👥</span>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Abonnés YT</p>
+                <p className="text-2xl font-bold">{formatNumber(stats.abonnesYouTube)}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Twitch Stats */}
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">📹</span>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">VODs</p>
+                <p className="text-2xl font-bold">{stats.vodsTwitch}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-purple-400 to-purple-500 p-6 rounded-lg shadow text-white">
+            <div className="flex items-center">
+              <div className="p-2 bg-white bg-opacity-20 rounded-lg">
+                <span className="text-2xl">👁️</span>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium opacity-90">Vues Twitch</p>
+                <p className="text-2xl font-bold">{formatNumber(stats.vuesTwitch)}</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Outils par catégorie */}
-        <div className="space-y-12">
-          
-          {/* Scraping */}
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-              🕷️ Outils de Scraping
-              <span className="ml-4 text-sm bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">
-                Récupération automatique
-              </span>
+        {/* Actions principales */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Contrôles Wattpad */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              📚 Contrôles Wattpad
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {outils.scraping.map((outil, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-semibold text-white">{outil.titre}</h3>
-                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
-                      {outil.statut}
-                    </span>
-                  </div>
-                  <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-                    {outil.description}
-                  </p>
-                  <a
-                    href={outil.url}
-                    className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105`}
-                  >
-                    Ouvrir l'outil →
-                  </a>
-                </div>
-              ))}
+            <div className="space-y-4">
+              <button
+                onClick={declencherAutoCheck}
+                disabled={autoCheckLoading}
+                className="w-full p-4 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 transition-colors flex items-center justify-center"
+              >
+                {autoCheckLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Vérification en cours...
+                  </>
+                ) : (
+                  <>
+                    <span className="text-xl mr-2">🔍</span>
+                    Vérifier toutes les histoires
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={lancerScrapingComplet}
+                disabled={scrapingLoading}
+                className="w-full p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 transition-colors flex items-center justify-center"
+              >
+                {scrapingLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Scraping en cours...
+                  </>
+                ) : (
+                  <>
+                    <span className="text-xl mr-2">🕷️</span>
+                    Scraping complet
+                  </>
+                )}
+              </button>
+
+              <a
+                href="/admin/scraping"
+                className="w-full p-4 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors flex items-center justify-center"
+              >
+                <span className="text-xl mr-2">➕</span>
+                Ajouter une nouvelle histoire
+              </a>
             </div>
           </div>
 
-          {/* Chaînes YouTube & Twitch */}
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-              📺 Chaînes YouTube & Twitch
-              <span className="ml-4 text-sm bg-red-500/20 text-red-300 px-3 py-1 rounded-full">
-                Synchronisation vidéos
-              </span>
+          {/* Contrôles Chaînes */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              📺 Contrôles Chaînes
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {outils.chaines.map((outil, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-semibold text-white">{outil.titre}</h3>
-                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
-                      {outil.statut}
-                    </span>
-                  </div>
-                  <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-                    {outil.description}
-                  </p>
-                  {outil.action ? (
-                    <button
-                      onClick={outil.action}
-                      disabled={outil.disabled}
-                      className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105 ${outil.disabled ? 'cursor-not-allowed' : ''}`}
-                    >
-                      {outil.disabled ? 'Synchronisation...' : 'Synchroniser maintenant →'}
-                    </button>
-                  ) : (
-                    <a
-                      href={outil.url}
-                      className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105`}
-                    >
-                      Ouvrir l'outil →
-                    </a>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+            <div className="space-y-4">
+              <button
+                onClick={synchroniserToutesChaines}
+                disabled={syncLoading}
+                className="w-full p-4 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors flex items-center justify-center"
+              >
+                {syncLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                    Synchronisation en cours...
+                  </>
+                ) : (
+                  <>
+                    <span className="text-xl mr-2">🔄</span>
+                    Synchroniser toutes les chaînes
+                  </>
+                )}
+              </button>
 
-          {/* Édition */}
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-              ✏️ Outils d'Édition
-              <span className="ml-4 text-sm bg-green-500/20 text-green-300 px-3 py-1 rounded-full">
-                Modification manuelle
-              </span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {outils.edition.map((outil, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-semibold text-white">{outil.titre}</h3>
-                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
-                      {outil.statut}
-                    </span>
-                  </div>
-                  <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-                    {outil.description}
-                  </p>
-                  <a
-                    href={outil.url}
-                    className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105`}
-                  >
-                    Ouvrir l'outil →
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
+              <a
+                href="/chaines"
+                className="w-full p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors flex items-center justify-center"
+              >
+                <span className="text-xl mr-2">📊</span>
+                Gérer les chaînes
+              </a>
 
-          {/* Visualisation */}
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-              👁️ Outils de Visualisation
-              <span className="ml-4 text-sm bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full">
-                Consultation et gestion
-              </span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {outils.visualisation.map((outil, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-semibold text-white">{outil.titre}</h3>
-                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
-                      {outil.statut}
-                    </span>
-                  </div>
-                  <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-                    {outil.description}
-                  </p>
-                  <a
-                    href={outil.url}
-                    className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105`}
-                  >
-                    Ouvrir l'outil →
-                  </a>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Automatisation */}
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center">
-              🤖 Automatisation
-              <span className="ml-4 text-sm bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full">
-                Système automatique
-              </span>
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {outils.automatisation.map((outil, index) => (
-                <div key={index} className="bg-white/10 backdrop-blur-md rounded-lg p-6 hover:bg-white/20 transition-all duration-300">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-xl font-semibold text-white">{outil.titre}</h3>
-                    <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
-                      {outil.statut}
-                    </span>
-                  </div>
-                  <p className="text-gray-300 text-sm mb-6 leading-relaxed">
-                    {outil.description}
-                  </p>
-                  <a
-                    href={outil.url}
-                    className={`${outil.couleur} text-white px-6 py-3 rounded-lg font-semibold inline-block transition-all duration-200 transform hover:scale-105`}
-                  >
-                    Ouvrir l'outil →
-                  </a>
-                </div>
-              ))}
+              <a
+                href="/admin/ajouter-chaine"
+                className="w-full p-4 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center justify-center"
+              >
+                <span className="text-xl mr-2">➕</span>
+                Ajouter une chaîne
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Raccourcis rapides */}
-        <div className="mt-16 bg-white/5 backdrop-blur-md rounded-lg p-8">
-          <h2 className="text-2xl font-bold text-white mb-6">⚡ Raccourcis Rapides</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="/admin/scraping" className="bg-blue-500/20 hover:bg-blue-500/30 text-blue-300 px-4 py-3 rounded-lg text-center transition-all">
-              🧠 Scraper
+        {/* État des chaînes par plateforme */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          {/* Chaînes YouTube */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="bg-red-100 p-2 rounded-lg mr-3">📺</span>
+              Chaînes YouTube
+            </h2>
+            <div className="space-y-4">
+              {chaines.filter(c => c.plateforme === 'youtube').length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  Aucune chaîne YouTube configurée
+                </div>
+              ) : (
+                chaines
+                  .filter(c => c.plateforme === 'youtube')
+                  .map((chaine) => (
+                    <div key={chaine.id} className="border border-red-200 rounded-lg p-4 bg-red-50">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-medium text-red-900 truncate">
+                          {chaine.nom}
+                        </h3>
+                        <span className="px-2 py-1 bg-red-200 text-red-800 rounded text-xs font-medium">
+                          YOUTUBE
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-red-700">
+                        <div>
+                          <span className="font-medium">👥</span>
+                          <br />
+                          {formatNumber(chaine.abonnes)} abonnés
+                        </div>
+                        <div>
+                          <span className="font-medium">👀</span>
+                          <br />
+                          {formatNumber(Number(chaine.vues_total))} vues
+                        </div>
+                      </div>
+                      {chaine.derniere_maj && (
+                        <div className="mt-2 text-xs text-red-600">
+                          MAJ: {new Date(chaine.derniere_maj).toLocaleDateString()}
+                        </div>
+                      )}
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
+
+          {/* Chaînes Twitch */}
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <span className="bg-purple-100 p-2 rounded-lg mr-3">🎮</span>
+              Chaînes Twitch
+            </h2>
+            <div className="space-y-4">
+              {chaines.filter(c => c.plateforme === 'twitch').length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  Aucune chaîne Twitch configurée
+                </div>
+              ) : (
+                chaines
+                  .filter(c => c.plateforme === 'twitch')
+                  .map((chaine) => (
+                    <div key={chaine.id} className="border border-purple-200 rounded-lg p-4 bg-purple-50">
+                      <div className="flex justify-between items-center mb-2">
+                        <h3 className="font-medium text-purple-900 truncate">
+                          {chaine.nom}
+                        </h3>
+                        <span className="px-2 py-1 bg-purple-200 text-purple-800 rounded text-xs font-medium">
+                          TWITCH
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-sm text-purple-700">
+                        <div>
+                          <span className="font-medium">👥</span>
+                          <br />
+                          {formatNumber(chaine.abonnes)} followers
+                        </div>
+                        <div>
+                          <span className="font-medium">👀</span>
+                          <br />
+                          {formatNumber(Number(chaine.vues_total))} vues
+                        </div>
+                      </div>
+                      {chaine.derniere_maj && (
+                        <div className="mt-2 text-xs text-purple-600">
+                          MAJ: {new Date(chaine.derniere_maj).toLocaleDateString()}
+                        </div>
+                      )}
+                    </div>
+                  ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions système */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            ⚙️ Actions système
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <button
+              onClick={nettoyerCache}
+              className="p-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              <div className="text-2xl mb-2">🧹</div>
+              <div className="font-medium">Nettoyer cache</div>
+            </button>
+
+            <a
+              href="/admin/dashboard"
+              className="p-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-center"
+            >
+              <div className="text-2xl mb-2">📊</div>
+              <div className="font-medium">Dashboard Admin</div>
             </a>
-            <a href="/admin/editeur" className="bg-green-500/20 hover:bg-green-500/30 text-green-300 px-4 py-3 rounded-lg text-center transition-all">
-              ✏️ Éditer
+
+            <a
+              href="/admin/gerer-histoires"
+              className="p-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors text-center"
+            >
+              <div className="text-2xl mb-2">🗂️</div>
+              <div className="font-medium">Gérer histoires</div>
             </a>
-            <a href="/admin/visualiser" className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 px-4 py-3 rounded-lg text-center transition-all">
-              👁️ Voir
-            </a>
-            <a href="/admin/test-scraping" className="bg-yellow-500/20 hover:bg-yellow-500/30 text-yellow-300 px-4 py-3 rounded-lg text-center transition-all">
-              🧪 Tester
-            </a>
-            <a href="/admin/gestionnaire-tomes" className="bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 px-4 py-3 rounded-lg text-center transition-all">
-              🏛️ Tomes
+
+            <a
+              href="/dashboard"
+              className="p-4 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors text-center"
+            >
+              <div className="text-2xl mb-2">🏠</div>
+              <div className="font-medium">Dashboard Utilisateur</div>
             </a>
           </div>
         </div>
 
-        {/* Infos système */}
-        <div className="mt-12 bg-gradient-to-r from-red-500/10 to-orange-500/10 backdrop-blur-md rounded-lg p-6">
-          <h3 className="text-xl font-bold text-white mb-4">🤖 Système Automatique</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-300">
+        {/* Informations système */}
+        <div className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+          <h3 className="font-semibold text-gray-800 mb-3">
+            🤖 Informations système
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
             <div>
-              <h4 className="font-semibold text-white mb-2">🕐 Cron Job Automatique :</h4>
+              <h4 className="font-medium mb-2">📚 Système Wattpad:</h4>
               <ul className="space-y-1">
-                <li>• Vérifie les MAJ tous les jours à 1h du matin</li>
+                <li>• Vérification automatique quotidienne (1h du matin)</li>
                 <li>• Scraping intelligent multi-méthodes</li>
                 <li>• Notifications automatiques aux utilisateurs</li>
+                <li>• Sauvegarde automatique des progressions</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-white mb-2">🔒 Sécurité :</h4>
+              <h4 className="font-medium mb-2">📺 Système Chaînes:</h4>
               <ul className="space-y-1">
-                <li>• Seul l'admin peut scraper et modifier</li>
-                <li>• Les utilisateurs peuvent seulement consulter</li>
-                <li>• Contrôle d'accès sur toutes les APIs</li>
+                <li>• Synchronisation YouTube et Twitch séparée</li>
+                <li>• Récupération automatique des statistiques</li>
+                <li>• Mise à jour des vidéos et VODs</li>
+                <li>• Monitoring des performances par plateforme</li>
               </ul>
             </div>
           </div>
-        </div>
-
-        {/* Navigation */}
-        <div className="mt-12 text-center space-x-6">
-          <a href="/admin" className="text-gray-300 hover:text-white underline">
-            ← Retour admin classique
-          </a>
-          <a href="/dashboard" className="text-gray-300 hover:text-white underline">
-            📊 Dashboard utilisateur
-          </a>
-          <a href="/" className="text-gray-300 hover:text-white underline">
-            🏠 Accueil
-          </a>
         </div>
       </div>
     </div>
