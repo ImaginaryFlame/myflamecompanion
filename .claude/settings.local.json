@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(curl:*)",
+      "Bash(timeout 5 npm run dev -- --port 3001)",
+      "Bash(npx prisma:*)",
+      "Bash(tasklist:*)",
+      "Bash(rm:*)",
+      "Bash(ls:*)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(taskkill:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(npx sanity:*)"
+    ],
+    "deny": []
+  }
+}

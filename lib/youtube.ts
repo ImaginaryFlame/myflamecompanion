@@ -88,7 +88,7 @@ export async function getYouTubeChannel(channelId: string): Promise<YouTubeChann
       id: channel.id!,
       title: channel.snippet?.title || '',
       description: channel.snippet?.description || '',
-      customUrl: channel.snippet?.customUrl,
+      customUrl: channel.snippet?.customUrl || undefined,
       thumbnails: {
         default: channel.snippet?.thumbnails?.default?.url || '',
         medium: channel.snippet?.thumbnails?.medium?.url || '',
@@ -112,7 +112,7 @@ export async function getYouTubeChannel(channelId: string): Promise<YouTubeChann
 /**
  * Récupère les dernières vidéos d'une chaîne YouTube
  */
-export async function getYouTubeVideos(channelId: string, maxResults: number = 10): Promise<YouTubeVideo[]> {
+export async function getYouTubeVideos(channelId: string, maxResults: number = 10, all: boolean = false): Promise<YouTubeVideo[]> {
   try {
     // Récupération des uploads de la chaîne
     const channelResponse = await youtube.channels.list({
@@ -123,40 +123,59 @@ export async function getYouTubeVideos(channelId: string, maxResults: number = 1
     const uploadsPlaylistId = channelResponse.data.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
     if (!uploadsPlaylistId) return [];
 
-    // Récupération des vidéos de la playlist uploads
-    const playlistResponse = await youtube.playlistItems.list({
-      part: ['snippet'],
-      playlistId: uploadsPlaylistId,
-      maxResults
-    });
+    let videos: YouTubeVideo[] = [];
+    let nextPageToken: string | undefined = undefined;
+    let fetched = 0;
+    const perPage = Math.min(maxResults, 50);
 
-    const videoIds = playlistResponse.data.items?.map(item => item.snippet?.resourceId?.videoId).filter(Boolean) || [];
-    if (videoIds.length === 0) return [];
+    do {
+      const playlistResponse: any = await youtube.playlistItems.list({
+        part: ['snippet'],
+        playlistId: uploadsPlaylistId,
+        maxResults: perPage,
+        pageToken: nextPageToken
+      });
 
-    // Récupération des détails des vidéos
-    const videosResponse = await youtube.videos.list({
-      part: ['snippet', 'statistics', 'contentDetails'],
-      id: videoIds as string[]
-    });
+      const videoIds = (playlistResponse.data.items?.map((item: any) => item.snippet?.resourceId?.videoId).filter(Boolean)) || [];
+      if (videoIds.length === 0) break;
 
-    return videosResponse.data.items?.map(video => ({
-      id: video.id!,
-      title: video.snippet?.title || '',
-      description: video.snippet?.description || '',
-      thumbnails: {
-        default: video.snippet?.thumbnails?.default?.url || '',
-        medium: video.snippet?.thumbnails?.medium?.url || '',
-        high: video.snippet?.thumbnails?.high?.url || '',
-        maxres: video.snippet?.thumbnails?.maxres?.url
-      },
-      publishedAt: video.snippet?.publishedAt || '',
-      duration: video.contentDetails?.duration || '',
-      viewCount: parseInt(video.statistics?.viewCount || '0'),
-      likeCount: parseInt(video.statistics?.likeCount || '0'),
-      commentCount: parseInt(video.statistics?.commentCount || '0'),
-      channelId: video.snippet?.channelId || '',
-      channelTitle: video.snippet?.channelTitle || ''
-    })) || [];
+      const videosResponse = await youtube.videos.list({
+        part: ['snippet', 'statistics', 'contentDetails'],
+        id: videoIds as string[]
+      });
+
+      const newVideos = videosResponse.data.items?.map(video => ({
+        id: video.id!,
+        title: video.snippet?.title || '',
+        description: video.snippet?.description || '',
+        thumbnails: {
+          default: video.snippet?.thumbnails?.default?.url || '',
+          medium: video.snippet?.thumbnails?.medium?.url || '',
+          high: video.snippet?.thumbnails?.high?.url || '',
+          maxres: video.snippet?.thumbnails?.maxres?.url || undefined
+        },
+        publishedAt: video.snippet?.publishedAt || '',
+        duration: video.contentDetails?.duration || '',
+        viewCount: parseInt(video.statistics?.viewCount || '0'),
+        likeCount: parseInt(video.statistics?.likeCount || '0'),
+        commentCount: parseInt(video.statistics?.commentCount || '0'),
+        channelId: video.snippet?.channelId || '',
+        channelTitle: video.snippet?.channelTitle || ''
+      })) || [];
+
+      videos = videos.concat(newVideos);
+      fetched += newVideos.length;
+      nextPageToken = playlistResponse.data.nextPageToken;
+
+      if (!all && fetched >= maxResults) break;
+    } while (nextPageToken);
+
+    // Si all=false, on limite à maxResults
+    if (!all) {
+      videos = videos.slice(0, maxResults);
+    }
+
+    return videos;
   } catch (error) {
     console.error('Erreur récupération vidéos YouTube:', error);
     return [];
@@ -208,12 +227,11 @@ export async function getYouTubeLiveStreams(channelId: string): Promise<YouTubeL
         medium: video.snippet?.thumbnails?.medium?.url || '',
         high: video.snippet?.thumbnails?.high?.url || ''
       },
-      scheduledStartTime: video.liveStreamingDetails?.scheduledStartTime,
-      actualStartTime: video.liveStreamingDetails?.actualStartTime,
-      actualEndTime: video.liveStreamingDetails?.actualEndTime,
-      concurrentViewers: video.liveStreamingDetails?.concurrentViewers ? 
-        parseInt(video.liveStreamingDetails.concurrentViewers) : undefined,
-      liveChatId: video.liveStreamingDetails?.activeLiveChatId,
+      scheduledStartTime: video.liveStreamingDetails?.scheduledStartTime ?? undefined,
+      actualStartTime: video.liveStreamingDetails?.actualStartTime ?? undefined,
+      actualEndTime: video.liveStreamingDetails?.actualEndTime ?? undefined,
+      concurrentViewers: video.liveStreamingDetails?.concurrentViewers ? parseInt(video.liveStreamingDetails.concurrentViewers) : undefined,
+      liveChatId: video.liveStreamingDetails?.activeLiveChatId ?? undefined,
       channelId: video.snippet?.channelId || '',
       channelTitle: video.snippet?.channelTitle || ''
     })) || [];

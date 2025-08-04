@@ -19,9 +19,9 @@ export async function PUT(
     const chapitreModifie = await prisma.chapitre.update({
       where: { id },
       data: {
-        titre: body.titre,
+        titre_chapitre: body.titre,
         contenu: body.contenu,
-        numero: body.numero
+        numero_chapitre: body.numero
       }
     });
 

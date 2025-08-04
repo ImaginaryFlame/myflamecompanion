@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useClientOnly } from '@/lib/hooks/useClientOnly';
 
 interface Chaine {
   id: number;
@@ -56,6 +57,7 @@ interface PlanningItem {
 }
 
 export default function ChainesPage() {
+  const isClient = useClientOnly();
   const [chaines, setChaines] = useState<Chaine[]>([]);
   const [videosYoutube, setVideosYoutube] = useState<Video[]>([]);
   const [videosTwitch, setVideosTwitch] = useState<Video[]>([]);
@@ -64,64 +66,196 @@ export default function ChainesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'videos' | 'lives' | 'planning'>('overview');
 
-  useEffect(() => {
-    const chargerDonnees = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Chargement des chaînes
-        const chainesResponse = await fetch('/api/chaines');
-        if (chainesResponse.ok) {
-          const chainesResult = await chainesResponse.json();
-          if (chainesResult.success) {
-            setChaines(chainesResult.data);
-          }
-        }
+  const [planningTitre, setPlanningTitre] = useState('');
+  const [planningDate, setPlanningDate] = useState('');
+  const [planningType, setPlanningType] = useState('video');
+  const [planningDescription, setPlanningDescription] = useState('');
+  const [isAddingPlanning, setIsAddingPlanning] = useState(false);
+  const [planningDateDebut, setPlanningDateDebut] = useState('');
+  const [planningDateFin, setPlanningDateFin] = useState('');
 
-        // Chargement des vidéos YouTube (excluant les Shorts)
-        const timestamp = Date.now();
-        const videosYoutubeResponse = await fetch(`/api/chaines/videos?type=youtube&_t=${timestamp}`);
-        if (videosYoutubeResponse.ok) {
-          const videosResult = await videosYoutubeResponse.json();
-          if (videosResult.success) {
-            setVideosYoutube(videosResult.data);
-          }
-        }
+  // Ajout état pour l'édition
+  const [planningEditId, setPlanningEditId] = useState<string | number | null>(null);
+  const [planningEditTitre, setPlanningEditTitre] = useState('');
+  const [planningEditDateDebut, setPlanningEditDateDebut] = useState('');
+  const [planningEditDateFin, setPlanningEditDateFin] = useState('');
+  const [planningEditType, setPlanningEditType] = useState('video');
+  const [planningEditDescription, setPlanningEditDescription] = useState('');
+  const [isEditingPlanning, setIsEditingPlanning] = useState(false);
 
-        // Chargement des VODs Twitch
-        const videosTwitchResponse = await fetch(`/api/chaines/videos?type=twitch&_t=${timestamp}`);
-        if (videosTwitchResponse.ok) {
-          const videosResult = await videosTwitchResponse.json();
-          if (videosResult.success) {
-            setVideosTwitch(videosResult.data);
-          }
-        }
-
-        // Chargement des lives
-        const livesResponse = await fetch(`/api/chaines/lives?type=youtube&_t=${timestamp}`);
-        if (livesResponse.ok) {
-          const livesResult = await livesResponse.json();
-          if (livesResult.success) {
-            setLives(livesResult.data);
-          }
-        }
-
-        // Chargement du planning
-        const planningResponse = await fetch(`/api/chaines/planning?type=youtube&_t=${timestamp}`);
-        if (planningResponse.ok) {
-          const planningResult = await planningResponse.json();
-          if (planningResult.success) {
-            setPlanning(planningResult.data);
-          }
-        }
-
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Erreur chargement données:', error);
-        setIsLoading(false);
+  // Fonction pour ajouter au planning
+  const ajouterAuPlanning = async () => {
+    // Debug des valeurs
+    console.log('Valeurs du formulaire:', {
+      titre: planningTitre,
+      dateDebut: planningDateDebut,
+      dateFin: planningDateFin,
+      type: planningType
+    });
+    
+    if (!planningTitre || !planningDateDebut.trim() || !planningDateFin.trim() || !planningType) {
+      alert(`❌ Veuillez remplir tous les champs obligatoires:
+- Titre: ${planningTitre ? '✅' : '❌ manquant'}
+- Date début: ${planningDateDebut ? '✅' : '❌ manquant'}
+- Date fin: ${planningDateFin ? '✅' : '❌ manquant'}
+- Type: ${planningType ? '✅' : '❌ manquant'}`);
+      return;
+    }
+    
+    try {
+      setIsAddingPlanning(true);
+      const res = await fetch('/api/chaines/planning', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          titre: planningTitre,
+          date_debut: planningDateDebut,
+          date_fin: planningDateFin,
+          type: planningType,
+          description: planningDescription,
+        })
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        alert('✅ Planning ajouté avec succès !');
+        setPlanningTitre('');
+        setPlanningDateDebut('');
+        setPlanningDateFin('');
+        setPlanningType('video');
+        setPlanningDescription('');
+        // Recharge le planning
+        await chargerDonnees();
+      } else {
+        alert(`❌ Erreur lors de l'ajout: ${data.error || 'Erreur inconnue'}`);
       }
-    };
+    } catch (error) {
+      console.error('Erreur ajout planning:', error);
+      alert('❌ Erreur réseau lors de l\'ajout du planning');
+    } finally {
+      setIsAddingPlanning(false);
+    }
+  };
 
+  // Handler suppression
+  const supprimerPlanning = async (id: string | number) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce planning ?')) {
+      return;
+    }
+    
+    try {
+      const res = await fetch(`/api/chaines/planning?id=${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      
+      if (res.ok && data.success) {
+        alert('✅ Planning supprimé avec succès !');
+        await chargerDonnees();
+      } else {
+        alert(`❌ Erreur lors de la suppression: ${data.error || 'Erreur inconnue'}`);
+      }
+    } catch (error) {
+      console.error('Erreur suppression planning:', error);
+      alert('❌ Erreur réseau lors de la suppression');
+    }
+  };
+
+  // Handler édition
+  const lancerEditionPlanning = (item: any) => {
+    setPlanningEditId(item.id);
+    setPlanningEditTitre(item.titre);
+    setPlanningEditDateDebut(item.date_debut);
+    setPlanningEditDateFin(item.date_fin);
+    setPlanningEditType(item.type);
+    setPlanningEditDescription(item.description || '');
+  };
+
+  const annulerEditionPlanning = () => {
+    setPlanningEditId(null);
+    setPlanningEditTitre('');
+    setPlanningEditDateDebut('');
+    setPlanningEditDateFin('');
+    setPlanningEditType('video');
+    setPlanningEditDescription('');
+  };
+
+  const validerEditionPlanning = async () => {
+    if (!planningEditId || !planningEditTitre || !planningEditDateDebut || !planningEditDateFin || !planningEditType) return;
+    setIsEditingPlanning(true);
+    await fetch(`/api/chaines/planning?id=${planningEditId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        titre: planningEditTitre,
+        date_debut: planningEditDateDebut,
+        date_fin: planningEditDateFin,
+        type: planningEditType,
+        description: planningEditDescription,
+      })
+    });
+    setIsEditingPlanning(false);
+    annulerEditionPlanning();
+    chargerDonnees();
+  };
+
+  const chargerDonnees = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Chargement des chaînes
+      const chainesResponse = await fetch('/api/chaines');
+      if (chainesResponse.ok) {
+        const chainesResult = await chainesResponse.json();
+        if (chainesResult.success) {
+          setChaines(chainesResult.data);
+        }
+      }
+
+      // Chargement des vidéos YouTube (excluant les Shorts)
+      const timestamp = Date.now();
+      const videosYoutubeResponse = await fetch(`/api/chaines/videos?type=youtube&_t=${timestamp}`);
+      if (videosYoutubeResponse.ok) {
+        const videosResult = await videosYoutubeResponse.json();
+        if (videosResult.success) {
+          setVideosYoutube(videosResult.data);
+        }
+      }
+
+      // Chargement des VODs Twitch
+      const videosTwitchResponse = await fetch(`/api/chaines/videos?type=twitch&_t=${timestamp}`);
+      if (videosTwitchResponse.ok) {
+        const videosResult = await videosTwitchResponse.json();
+        if (videosResult.success) {
+          setVideosTwitch(videosResult.data);
+        }
+      }
+
+      // Chargement des lives
+      const livesResponse = await fetch(`/api/chaines/lives?type=youtube&_t=${timestamp}`);
+      if (livesResponse.ok) {
+        const livesResult = await livesResponse.json();
+        if (livesResult.success) {
+          setLives(livesResult.data);
+        }
+      }
+
+      // Chargement du planning
+      const planningResponse = await fetch(`/api/chaines/planning?type=youtube&_t=${timestamp}`);
+      if (planningResponse.ok) {
+        const planningResult = await planningResponse.json();
+        if (planningResult.success) {
+          setPlanning(planningResult.data);
+        }
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Erreur chargement données:', error);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     chargerDonnees();
   }, []);
 
@@ -213,7 +347,7 @@ export default function ChainesPage() {
                 {chaines.map(chaine => (
                   <div key={chaine.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
                     <div className="flex items-center space-x-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-xl ${
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white text-lg sm:text-xl ${
                         chaine.type === 'youtube' ? 'bg-red-500' : 'bg-purple-500'
                       }`}>
                         {chaine.type === 'youtube' ? '📺' : '🎮'}
@@ -317,6 +451,22 @@ export default function ChainesPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Quick Planning Access */}
+              <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-green-800">📅 Planning de Contenu</h3>
+                    <p className="text-sm text-green-600">Organisez vos publications à venir</p>
+                  </div>
+                  <button 
+                    onClick={() => setActiveTab('planning')}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                  >
+                    ➕ Nouveau Planning
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -328,7 +478,7 @@ export default function ChainesPage() {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-800">
-                  🔴 Mes Vidéos YouTube
+                  �� Mes Vidéos YouTube
                 </h2>
                 <span className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
                   ✅ Shorts exclus (≥1.5min)
@@ -376,7 +526,7 @@ export default function ChainesPage() {
                           
                           <div className="flex justify-between items-center text-sm text-gray-500">
                             <span>👀 {video.vues.toLocaleString()}</span>
-                            <span>📅 {new Date(video.date_publication).toLocaleDateString('fr-FR')}</span>
+                            <span>📅 {isClient ? new Date(video.date_publication).toLocaleDateString('fr-FR') : '--/--/--'}</span>
                           </div>
                         </div>
                       </div>
@@ -427,7 +577,7 @@ export default function ChainesPage() {
                         
                         <div className="flex justify-between items-center text-sm text-gray-500">
                           <span>👀 {video.vues.toLocaleString()}</span>
-                          <span>📅 {new Date(video.date_publication).toLocaleDateString('fr-FR')}</span>
+                          <span>📅 {isClient ? new Date(video.date_publication).toLocaleDateString('fr-FR') : '--/--/--'}</span>
                         </div>
                       </div>
                     </div>
@@ -468,7 +618,7 @@ export default function ChainesPage() {
                         
                         {live.date_debut_reelle && (
                           <p className="text-xs text-gray-500 mt-1">
-                            Débuté le {new Date(live.date_debut_reelle).toLocaleString('fr-FR')}
+                            Débuté le {isClient ? new Date(live.date_debut_reelle).toLocaleString('fr-FR') : '--'}
                           </p>
                         )}
                       </div>
@@ -495,7 +645,16 @@ export default function ChainesPage() {
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-gray-800">📅 Planning de Contenu</h2>
-              <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
+              <button 
+                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                onClick={() => {
+                  // Scroll to the creation form
+                  const creationForm = document.querySelector('.bg-gray-50.rounded-lg');
+                  if (creationForm) {
+                    creationForm.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
+              >
                 ➕ Nouveau Planning
               </button>
             </div>
@@ -505,7 +664,21 @@ export default function ChainesPage() {
                 <div className="text-4xl mb-2">📅</div>
                 <p>Aucun planning configuré</p>
                 <p className="text-sm mb-4">Créez votre planning de contenu pour organiser vos publications</p>
-                <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                <button 
+                  className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors" 
+                  onClick={() => {
+                    // Scroll to the creation form
+                    const creationForm = document.querySelector('.bg-gray-50.rounded-lg');
+                    if (creationForm) {
+                      creationForm.scrollIntoView({ behavior: 'smooth' });
+                      // Focus on the first input field
+                      const firstInput = creationForm.querySelector('input[type="text"]');
+                      if (firstInput) {
+                        setTimeout(() => firstInput.focus(), 500);
+                      }
+                    }
+                  }}
+                >
                   📝 Créer mon premier planning
                 </button>
               </div>
@@ -518,10 +691,10 @@ export default function ChainesPage() {
                         <h3 className="font-semibold text-gray-800">{item.titre}</h3>
                         <div className="flex items-center space-x-4 text-sm text-gray-600 mt-1">
                           <span className="flex items-center">
-                            📅 {new Date(item.date_prevue).toLocaleDateString('fr-FR')}
+                            📅 {isClient ? new Date(item.date_prevue).toLocaleDateString('fr-FR') : '--/--/--'}
                           </span>
                           <span className="flex items-center">
-                            ⏰ {new Date(item.date_prevue).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}
+                            ⏰ {isClient ? new Date(item.date_prevue).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : '--:--'}
                           </span>
                           <span className={`px-2 py-1 rounded text-xs ${
                             item.type === 'video' ? 'bg-red-100 text-red-700' :
@@ -547,10 +720,10 @@ export default function ChainesPage() {
                         )}
                       </div>
                       <div className="flex space-x-2">
-                        <button className="text-blue-500 hover:text-blue-700 px-3 py-1 rounded border border-blue-300 hover:border-blue-500 transition-colors">
+                        <button className="text-blue-500 hover:text-blue-700 px-3 py-1 rounded border border-blue-300 hover:border-blue-500 transition-colors" onClick={() => lancerEditionPlanning(item)}>
                           ✏️ Modifier
                         </button>
-                        <button className="text-red-500 hover:text-red-700 px-3 py-1 rounded border border-red-300 hover:border-red-500 transition-colors">
+                        <button className="text-red-500 hover:text-red-700 px-3 py-1 rounded border border-red-300 hover:border-red-500 transition-colors" onClick={() => supprimerPlanning(item.id)}>
                           🗑️ Supprimer
                         </button>
                       </div>
@@ -563,25 +736,42 @@ export default function ChainesPage() {
             {/* Section de création rapide */}
             <div className="mt-8 p-4 bg-gray-50 rounded-lg">
               <h3 className="font-semibold text-gray-800 mb-4">🚀 Création Rapide</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Titre</label>
                   <input 
                     type="text" 
                     placeholder="Ex: Nouveau chapitre Magi"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    value={planningTitre}
+                    onChange={e => setPlanningTitre(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-gray-700">Date & Heure</label>
+                  <label className="block text-sm font-medium text-gray-700">Début</label>
                   <input 
                     type="datetime-local"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    value={planningDateDebut}
+                    onChange={e => setPlanningDateDebut(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Fin</label>
+                  <input 
+                    type="datetime-local"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    value={planningDateFin}
+                    onChange={e => setPlanningDateFin(e.target.value)}
                   />
                 </div>
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-gray-700">Type</label>
-                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                  <select 
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                    value={planningType}
+                    onChange={e => setPlanningType(e.target.value)}
+                  >
                     <option value="video">📹 Vidéo YouTube</option>
                     <option value="live">🔴 Live Twitch</option>
                     <option value="article">📝 Article/Post</option>
@@ -594,13 +784,51 @@ export default function ChainesPage() {
                   placeholder="Détails sur le contenu prévu..."
                   rows={2}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  value={planningDescription}
+                  onChange={e => setPlanningDescription(e.target.value)}
                 ></textarea>
               </div>
               <div className="mt-4 flex justify-end">
-                <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors">
+                <button className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors" onClick={ajouterAuPlanning} disabled={isAddingPlanning}>
                   ➕ Ajouter au Planning
                 </button>
               </div>
+            </div>
+          </div>
+        )}
+
+        {planningEditId && (
+          <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
+            <h3 className="font-semibold text-yellow-800 mb-2">✏️ Modifier le planning</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Titre</label>
+                <input type="text" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" value={planningEditTitre} onChange={e => setPlanningEditTitre(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Début</label>
+                <input type="datetime-local" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" value={planningEditDateDebut} onChange={e => setPlanningEditDateDebut(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Fin</label>
+                <input type="datetime-local" className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" value={planningEditDateFin} onChange={e => setPlanningEditDateFin(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-gray-700">Type</label>
+                <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" value={planningEditType} onChange={e => setPlanningEditType(e.target.value)}>
+                  <option value="video">📹 Vidéo YouTube</option>
+                  <option value="live">🔴 Live Twitch</option>
+                  <option value="article">📝 Article/Post</option>
+                </select>
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Description (optionnel)</label>
+              <textarea className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" value={planningEditDescription} onChange={e => setPlanningEditDescription(e.target.value)}></textarea>
+            </div>
+            <div className="mt-4 flex space-x-2">
+              <button className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 transition-colors" onClick={validerEditionPlanning} disabled={isEditingPlanning}>Valider</button>
+              <button className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-400 transition-colors" onClick={annulerEditionPlanning}>Annuler</button>
             </div>
           </div>
         )}

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { mockHistoires, mockChapitres } from '@/lib/mock-data';
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,9 @@ export async function GET() {
     console.error('Erreur récupération histoires:', error);
     return NextResponse.json({ 
       success: false, 
-      error: 'Erreur de base de données' 
+      error: 'Erreur de connexion à la base de données',
+      data: [],
+      count: 0
     }, { status: 500 });
   }
 }

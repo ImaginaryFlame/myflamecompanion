@@ -32,8 +32,8 @@ export async function POST(request: Request) {
     const nouveauChapitre = await prisma.chapitre.create({
       data: {
         histoire_id: body.histoire_id,
-        titre: body.titre,
-        numero: body.numero,
+        titre_chapitre: body.titre,
+        numero_chapitre: body.numero,
         contenu: body.contenu
       }
     });

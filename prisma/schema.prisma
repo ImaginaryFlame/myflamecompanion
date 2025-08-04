@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,229 +8,491 @@ datasource db {
 }
 
 model histoire {
-  id               Int           @id @default(autoincrement())
-  titre            String        @db.VarChar(255)
-  description      String?
-  auteur           String?       @db.VarChar(100)
-  source           String?       @db.VarChar(50)
-  url_source       String?
-  date_publication DateTime?     @db.Timestamp(6)
-  image_couverture String?
-  urls_multiples   Json?         // URLs pour Webnovel, Yume-Arts, etc.
-
-  // Relations
-  chapitres        chapitre[]
-  progressions     progression[]
+  id                  Int                   @id @default(autoincrement())
+  titre               String                @db.VarChar(255)
+  description         String?
+  auteur              String?               @db.VarChar(100)
+  source              String?               @db.VarChar(50)
+  url_source          String?
+  date_publication    DateTime?             @db.Timestamp(6)
+  image_couverture    String?
+  urls_multiples      Json?
+  wiki_actif          Boolean               @default(false) // Active/désactive le wiki pour cette histoire
+  chapitres           chapitre[]
+  progressions        progression[]
+  wiki_personnages    wiki_personnage[]
+  wiki_lieux          wiki_lieu[]
+  wiki_objets         wiki_objet[]
+  wiki_anecdotes      wiki_anecdote[]
+  wiki_illustrations  wiki_illustration[]
+  wiki_races          wiki_race[]
+  wiki_factions       wiki_faction[]
+  wiki_evenements     wiki_evenement[]
+  wiki_debloquages    wiki_debloquage[]
 
   @@map("histoire")
 }
 
 model chapitre {
-  id               Int       @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   histoire_id      Int
-  numero_chapitre  Int
-  titre_chapitre   String?   @db.VarChar(255)
   contenu          String?
-  date_publication DateTime? @db.Timestamp(6)
+  date_publication DateTime?     @db.Timestamp(6)
+  numero_chapitre  Int
+  titre_chapitre   String?       @db.VarChar(255)
   url_chapitre     String?
-
-  // Relations
-  histoire         histoire  @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+  histoire         histoire      @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
   progressions     progression[]
 
   @@map("chapitre")
 }
 
 model utilisateur {
-  id            Int      @id @default(autoincrement())
-  nom           String   @db.VarChar(100)
-  email         String   @unique @db.VarChar(255)
-  mot_de_passe  String   @db.VarChar(255)
-  date_creation DateTime @default(now()) @db.Timestamp(6)
-  role          String   @default("user") @db.VarChar(20)
-
-  // Relations
-  progressions  progression[]
-  notes         note[]
-  notifications notification[]
-  votes         vote[]
-  abonnements   abonnement[]
+  id                 Int                   @id @default(autoincrement())
+  email              String                @unique @db.VarChar(255)
+  mot_de_passe       String                @db.VarChar(255)
+  date_creation      DateTime              @default(now()) @db.Timestamp(6)
+  nom                String                @db.VarChar(100)
+  role               String                @default("user") @db.VarChar(20)
+  abonnements        abonnement[]
+  notes              note[]
+  notifications      notification[]
+  progressions       progression[]
+  votes              vote[]
+  points_utilisateur points_utilisateur?
+  historique_points  historique_points[]
+  wiki_debloquages   wiki_debloquage[]
 
   @@map("utilisateur")
 }
 
 model progression {
-  id                    Int      @id @default(autoincrement())
+  id                    Int         @id @default(autoincrement())
   utilisateur_id        Int
   histoire_id           Int
   chapitre_id           Int?
-  chapitre_lu           Int      @default(0)
-  date_derniere_lecture DateTime @default(now()) @db.Timestamp(6)
-  statut                String   @default("en_cours") @db.VarChar(20)
-
-  // Relations
-  utilisateur           utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  chapitre_lu           Int         @default(0)
+  date_derniere_lecture DateTime    @default(now()) @db.Timestamp(6)
+  statut                String      @default("en_cours") @db.VarChar(20)
+  chapitre              chapitre?   @relation(fields: [chapitre_id], references: [id])
   histoire              histoire    @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
-  chapitre              chapitre?   @relation(fields: [chapitre_id], references: [id], onDelete: SetNull)
+  utilisateur           utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
 
   @@unique([utilisateur_id, histoire_id])
   @@map("progression")
 }
 
 model note {
-  id             Int      @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   utilisateur_id Int
-  histoire_id    Int
   chapitre_id    Int?
   contenu        String
-  date_creation  DateTime @default(now()) @db.Timestamp(6)
-
-  // Relations
+  date_creation  DateTime    @default(now()) @db.Timestamp(6)
+  histoire_id    Int
   utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
 
   @@map("note")
 }
 
 model notification {
-  id             Int      @id @default(autoincrement())
+  id             Int         @id @default(autoincrement())
   utilisateur_id Int
-  titre          String   @db.VarChar(255)
+  type           String      @db.VarChar(50)
   message        String
-  type           String   @db.VarChar(50)
-  lu             Boolean  @default(false)
-  date_creation  DateTime @default(now()) @db.Timestamp(6)
+  lu             Boolean     @default(false)
   data_extra     Json?
-
-  // Relations
+  date_creation  DateTime    @default(now()) @db.Timestamp(6)
+  titre          String      @db.VarChar(255)
   utilisateur    utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
 
   @@map("notification")
 }
 
-// === NOUVEAUX MODÈLES YOUTUBE/TWITCH ===
-
 model chaine {
-  id                 Int      @id @default(autoincrement())
-  nom                String   @db.VarChar(100)
-  type               String   @db.VarChar(20) // 'youtube' ou 'twitch'
-  channel_id         String   @unique @db.VarChar(100)
-  nom_affichage      String   @db.VarChar(100)
-  description        String?
-  avatar_url         String?
-  banniere_url       String?
-  url_chaine         String
-  abonnes            Int      @default(0)
-  videos_total       Int      @default(0)
-  vues_total         BigInt   @default(0)
-  actif              Boolean  @default(true)
-  derniere_maj       DateTime @default(now()) @db.Timestamp(6)
-  date_creation      DateTime @default(now()) @db.Timestamp(6)
-
-  // Relations
-  videos             video[]
-  lives              live[]
-  plannings          planning[]
-  abonnements        abonnement[]
+  id            Int          @id @default(autoincrement())
+  nom           String       @db.VarChar(100)
+  type          String       @db.VarChar(20)
+  channel_id    String       @unique @db.VarChar(100)
+  nom_affichage String       @db.VarChar(100)
+  description   String?
+  avatar_url    String?
+  banniere_url  String?
+  url_chaine    String
+  abonnes       Int          @default(0)
+  videos_total  Int          @default(0)
+  vues_total    BigInt       @default(0)
+  actif         Boolean      @default(true)
+  derniere_maj  DateTime     @default(now()) @db.Timestamp(6)
+  date_creation DateTime     @default(now()) @db.Timestamp(6)
+  abonnements   abonnement[]
+  lives         live[]
+  plannings     planning[]
+  videos        video[]
 
   @@map("chaine")
 }
 
 model video {
-  id                 Int      @id @default(autoincrement())
-  chaine_id          Int
-  video_id           String   @unique @db.VarChar(100)
-  titre              String   @db.VarChar(255)
-  description        String?
-  miniature_url      String?
-  duree              Int?     // en secondes
-  vues               BigInt   @default(0)
-  likes              Int      @default(0)
-  commentaires       Int      @default(0)
-  date_publication   DateTime @db.Timestamp(6)
-  date_creation      DateTime @default(now()) @db.Timestamp(6)
-  tags               Json?    // Array de tags
-  categorie          String?  @db.VarChar(50)
-  histoire_liee_id   Int?     // Lien vers une histoire si applicable
-
-  // Relations
-  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+  id               Int      @id @default(autoincrement())
+  chaine_id        Int
+  video_id         String   @unique @db.VarChar(100)
+  titre            String   @db.VarChar(255)
+  description      String?
+  miniature_url    String?
+  duree            Int?
+  vues             BigInt   @default(0)
+  likes            Int      @default(0)
+  commentaires     Int      @default(0)
+  date_publication DateTime @db.Timestamp(6)
+  date_creation    DateTime @default(now()) @db.Timestamp(6)
+  tags             Json?
+  categorie        String?  @db.VarChar(50)
+  histoire_liee_id Int?
+  chaine           chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
 
   @@map("video")
 }
 
 model live {
-  id                 Int      @id @default(autoincrement())
+  id                 Int       @id @default(autoincrement())
   chaine_id          Int
-  live_id            String   @unique @db.VarChar(100)
-  titre              String   @db.VarChar(255)
+  live_id            String    @unique @db.VarChar(100)
+  titre              String    @db.VarChar(255)
   description        String?
   miniature_url      String?
-  statut             String   @db.VarChar(20) // 'programme', 'en_cours', 'termine'
+  statut             String    @db.VarChar(20)
   date_debut_prevue  DateTime? @db.Timestamp(6)
   date_debut_reelle  DateTime? @db.Timestamp(6)
   date_fin           DateTime? @db.Timestamp(6)
-  spectateurs_max    Int      @default(0)
-  spectateurs_actuel Int      @default(0)
+  spectateurs_max    Int       @default(0)
+  spectateurs_actuel Int       @default(0)
   url_live           String?
-  histoire_liee_id   Int?     // Lien vers une histoire si applicable
-  date_creation      DateTime @default(now()) @db.Timestamp(6)
-
-  // Relations
-  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+  histoire_liee_id   Int?
+  date_creation      DateTime  @default(now()) @db.Timestamp(6)
+  chaine             chaine    @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
   votes              vote[]
 
   @@map("live")
 }
 
 model planning {
-  id                 Int      @id @default(autoincrement())
-  chaine_id          Int
-  type               String   @db.VarChar(20) // 'video' ou 'live'
-  titre              String   @db.VarChar(255)
-  description        String?
-  date_prevue        DateTime @db.Timestamp(6)
-  statut             String   @default("programme") @db.VarChar(20) // 'programme', 'en_cours', 'termine', 'annule'
-  histoire_liee_id   Int?
-  tags               Json?
-  date_creation      DateTime @default(now()) @db.Timestamp(6)
-  date_modification  DateTime @default(now()) @db.Timestamp(6)
-
-  // Relations
-  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+  id                Int      @id @default(autoincrement())
+  chaine_id         Int
+  type              String   @db.VarChar(20)
+  titre             String   @db.VarChar(255)
+  description       String?
+  date_prevue       DateTime @db.Timestamp(6)
+  statut            String   @default("programme") @db.VarChar(20)
+  histoire_liee_id  Int?
+  tags              Json?
+  date_creation     DateTime @default(now()) @db.Timestamp(6)
+  date_modification DateTime @default(now()) @db.Timestamp(6)
+  chaine            chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
 
   @@map("planning")
 }
 
 model vote {
-  id                 Int      @id @default(autoincrement())
-  live_id            Int
-  utilisateur_id     Int
-  question           String   @db.VarChar(255)
-  options            Json     // Array des options de vote
-  votes_resultats    Json     // Résultats des votes
-  actif              Boolean  @default(true)
-  date_creation      DateTime @default(now()) @db.Timestamp(6)
-  date_fin           DateTime? @db.Timestamp(6)
-
-  // Relations
-  live               live     @relation(fields: [live_id], references: [id], onDelete: Cascade)
-  utilisateur        utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  id              Int         @id @default(autoincrement())
+  live_id         Int
+  utilisateur_id  Int
+  question        String      @db.VarChar(255)
+  options         Json
+  votes_resultats Json
+  actif           Boolean     @default(true)
+  date_creation   DateTime    @default(now()) @db.Timestamp(6)
+  date_fin        DateTime?   @db.Timestamp(6)
+  live            live        @relation(fields: [live_id], references: [id], onDelete: Cascade)
+  utilisateur     utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
 
   @@map("vote")
 }
 
 model abonnement {
-  id                 Int      @id @default(autoincrement())
-  utilisateur_id     Int
-  chaine_id          Int
-  notifications_video Boolean  @default(true)
-  notifications_live Boolean  @default(true)
-  date_abonnement    DateTime @default(now()) @db.Timestamp(6)
-
-  // Relations
-  utilisateur        utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
-  chaine             chaine   @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+  id                  Int         @id @default(autoincrement())
+  utilisateur_id      Int
+  chaine_id           Int
+  notifications_video Boolean     @default(true)
+  notifications_live  Boolean     @default(true)
+  date_abonnement     DateTime    @default(now()) @db.Timestamp(6)
+  chaine              chaine      @relation(fields: [chaine_id], references: [id], onDelete: Cascade)
+  utilisateur         utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
 
   @@unique([utilisateur_id, chaine_id])
   @@map("abonnement")
+}
+
+// Système de récompenses et wiki
+
+model points_utilisateur {
+  id                Int         @id @default(autoincrement())
+  utilisateur_id    Int         @unique
+  points_totaux     Int         @default(0)
+  points_actuels    Int         @default(0)
+  niveau            Int         @default(1)
+  titre_actuel      String?     @db.VarChar(100)
+  date_creation     DateTime    @default(now()) @db.Timestamp(6)
+  derniere_maj      DateTime    @default(now()) @db.Timestamp(6)
+  utilisateur       utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+
+  @@map("points_utilisateur")
+}
+
+model action_points {
+  id                Int                    @id @default(autoincrement())
+  nom               String                 @db.VarChar(100)
+  description       String?
+  points_accordes   Int
+  type_action       String                 @db.VarChar(50) // "lecture", "progression", "completion", "achievement"
+  actif             Boolean                @default(true)
+  date_creation     DateTime               @default(now()) @db.Timestamp(6)
+  historique_points historique_points[]
+
+  @@map("action_points")
+}
+
+model historique_points {
+  id             Int           @id @default(autoincrement())
+  utilisateur_id Int
+  action_id      Int
+  points_gagnes  Int
+  histoire_id    Int?
+  chapitre_id    Int?
+  date_gain      DateTime      @default(now()) @db.Timestamp(6)
+  details        Json?
+  utilisateur    utilisateur   @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  action         action_points @relation(fields: [action_id], references: [id], onDelete: Cascade)
+
+  @@map("historique_points")
+}
+
+model wiki_personnage {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  nom                   String                     @db.VarChar(255)
+  prenom                String?                    @db.VarChar(255)
+  surnoms               Json? // Array de surnoms
+  description           String?
+  apparence             String?
+  personnalite          String?
+  background            String?
+  age                   Int?
+  sexe                  String?                    @db.VarChar(20)
+  origine               String?                    @db.VarChar(255)
+  role_actuel           String?                    @db.VarChar(100)
+  relations             Json? // Relations simplifiées
+  famille               Json? // Structure famille
+  pouvoirs_capacites    Json? // Pouvoirs et capacités
+  equipement            Json? // Équipement et possessions
+  affiliations          Json? // Factions et affiliations
+  metiers_fonctions     Json? // Métiers et fonctions
+  image_url             String?
+  images_galerie        Json? // Array d'URLs d'images
+  anecdotes             Json? // Anecdotes sur le personnage
+  citations_marquantes  Json? // Citations du personnage
+  evolution_personnage  Json? // Évolution dans l'histoire
+  spoiler_level         String                     @default("none") @db.VarChar(20)
+  chapitres_apparition  Json? // Liste des chapitres où le personnage apparaît
+  niveau_deverrouillage Int                        @default(1) // Chapitres à lire pour débloquer
+  version_fiche         String                     @default("actuelle") @db.VarChar(20) // "actuelle" ou "complete"
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  derniere_maj          DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_personnage")
+}
+
+model wiki_lieu {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  nom                   String                     @db.VarChar(255)
+  type                  String?                    @db.VarChar(50) // "royaume", "ville", "village", "zone_sauvage", etc.
+  description           String?
+  histoire_lieu         String?
+  geographie            Json? // Géographie, climat, etc.
+  politique             Json? // Système politique, dirigeants
+  culture               Json? // Culture, traditions
+  economie              Json? // Économie, ressources
+  population            Json? // Population, races présentes
+  lieux_notables        Json? // Sous-lieux importants
+  image_url             String?
+  images_galerie        Json? // Array d'URLs d'images
+  anecdotes             Json? // Anecdotes sur le lieu
+  symbolisme            Json? // Symbolisme et signification
+  spoiler_level         String                     @default("none") @db.VarChar(20)
+  chapitres_apparition  Json? // Liste des chapitres où le lieu apparaît
+  niveau_deverrouillage Int                        @default(1) // Chapitres à lire pour débloquer
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  derniere_maj          DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_lieu")
+}
+
+model wiki_objet {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  nom                   String                     @db.VarChar(255)
+  type                  String?                    @db.VarChar(50) // "arme", "armure", "bijou", "artefact", etc.
+  description           String?
+  proprietes            String?
+  histoire_objet        String?
+  caracteristiques      Json? // Apparence, matériaux, dimensions, état
+  pouvoirs              Json? // Capacités magiques, enchantements
+  utilisation           Json? // Fonctions, restrictions, risques
+  proprietaires         Json? // Historique des propriétaires
+  symbolisme            Json? // Signification symbolique
+  creation              Json? // Créateur, origine, circonstances
+  image_url             String?
+  images_galerie        Json? // Array d'URLs d'images
+  anecdotes             Json? // Anecdotes sur l'objet
+  spoiler_level         String                     @default("none") @db.VarChar(20)
+  chapitres_apparition  Json? // Liste des chapitres où l'objet apparaît
+  niveau_deverrouillage Int                        @default(1) // Chapitres à lire pour débloquer
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  derniere_maj          DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_objet")
+}
+
+model wiki_anecdote {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  titre                 String                     @db.VarChar(255)
+  contenu               String
+  type                  String                     @db.VarChar(50) // "creation", "reference", "easter_egg", "secret", "trivia"
+  image_url             String?
+  chapitres_concernes   Json? // Chapitres liés à cette anecdote
+  niveau_deverrouillage Int                        @default(1) // Chapitres à lire pour débloquer
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_anecdote")
+}
+
+model wiki_illustration {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  titre                 String                     @db.VarChar(255)
+  description           String?
+  image_url             String
+  type                  String                     @db.VarChar(50) // "concept_art", "scene", "personnage", "lieu", "fan_art"
+  chapitre_id           Int?
+  niveau_deverrouillage Int                        @default(1) // Chapitres à lire pour débloquer
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_illustration")
+}
+
+model wiki_debloquage {
+  id               Int         @id @default(autoincrement())
+  utilisateur_id   Int
+  histoire_id      Int
+  type_contenu     String      @db.VarChar(50) // "personnage", "lieu", "objet", "anecdote", "illustration"
+  contenu_id       Int // ID vers le contenu débloqué
+  date_debloquage  DateTime    @default(now()) @db.Timestamp(6)
+  utilisateur      utilisateur @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+  histoire         histoire    @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@unique([utilisateur_id, histoire_id, type_contenu, contenu_id])
+  @@map("wiki_debloquage")
+}
+
+model niveau_titre {
+  id                Int      @id @default(autoincrement())
+  niveau_requis     Int      @unique
+  nom_titre         String   @db.VarChar(100)
+  description       String?
+  icone             String?  @db.VarChar(50)
+  couleur_hexa      String?  @db.VarChar(7)
+  avantages         Json? // Débloquages spéciaux, réductions, etc.
+  actif             Boolean  @default(true)
+  date_creation     DateTime @default(now()) @db.Timestamp(6)
+
+  @@map("niveau_titre")
+}
+
+// Nouveaux modèles pour enrichir le wiki
+
+model wiki_race {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  nom                   String                     @db.VarChar(255)
+  type                  String?                    @db.VarChar(50) // "humanoide", "mythologique", "artificiel", etc.
+  description           String?
+  caracteristiques_physiques Json? // Apparence, taille, poids, longévité
+  capacites_raciales    Json? // Capacités spéciales de la race
+  culture               Json? // Culture, traditions, langue
+  habitat               Json? // Habitats naturels
+  reproduction          Json? // Reproduction, cycle de vie
+  relations_autres_races Json? // Relations avec autres races
+  image_url             String?
+  images_galerie        Json?
+  spoiler_level         String                     @default("none") @db.VarChar(20)
+  chapitres_apparition  Json?
+  niveau_deverrouillage Int                        @default(1)
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  derniere_maj          DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_race")
+}
+
+model wiki_faction {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  nom                   String                     @db.VarChar(255)
+  type                  String?                    @db.VarChar(50) // "organisation", "royaume", "secte", "guilde", etc.
+  description           String?
+  objectifs             Json? // Objectifs et motivations
+  structure             Json? // Hiérarchie, organisation
+  membres_notables      Json? // Membres importants
+  ressources            Json? // Ressources, territoires
+  histoire_faction      String?
+  alliances             Json? // Alliances et relations
+  conflits              Json? // Conflits et rivalités
+  image_url             String?
+  images_galerie        Json?
+  spoiler_level         String                     @default("none") @db.VarChar(20)
+  chapitres_apparition  Json?
+  niveau_deverrouillage Int                        @default(1)
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  derniere_maj          DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_faction")
+}
+
+model wiki_evenement {
+  id                    Int                        @id @default(autoincrement())
+  histoire_id           Int
+  nom                   String                     @db.VarChar(255)
+  type                  String?                    @db.VarChar(50) // "bataille", "ceremony", "catastrophe", "celebration", etc.
+  description           String?
+  date_evenement        String?                    @db.VarChar(100) // Date dans l'univers de l'histoire
+  lieu                  String?                    @db.VarChar(255)
+  participants          Json? // Personnages, factions impliqués
+  consequences          Json? // Conséquences de l'événement
+  contexte              String?                    // Contexte historique
+  temoignages           Json? // Témoignages, récits
+  image_url             String?
+  images_galerie        Json?
+  spoiler_level         String                     @default("none") @db.VarChar(20)
+  chapitres_apparition  Json?
+  niveau_deverrouillage Int                        @default(1)
+  actif                 Boolean                    @default(true)
+  date_creation         DateTime                   @default(now()) @db.Timestamp(6)
+  derniere_maj          DateTime                   @default(now()) @db.Timestamp(6)
+  histoire              histoire                   @relation(fields: [histoire_id], references: [id], onDelete: Cascade)
+
+  @@map("wiki_evenement")
 }

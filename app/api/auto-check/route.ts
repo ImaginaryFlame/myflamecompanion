@@ -122,6 +122,7 @@ async function creerNotification(histoireId: number, message: string, type: stri
     await prisma.notification.create({
       data: {
         utilisateur_id: 1, // TODO: Gérer les utilisateurs multiples
+        titre: `Nouvelle notification - ${type}`,
         type: type,
         message: message,
         lu: false
@@ -138,6 +139,7 @@ async function creerNotificationGlobale(message: string, type: string) {
     await prisma.notification.create({
       data: {
         utilisateur_id: 1, // TODO: Gérer les utilisateurs multiples
+        titre: `Notification globale - ${type}`,
         type: type,
         message: message,
         lu: false

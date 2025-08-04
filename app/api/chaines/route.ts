@@ -1,24 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { mockChaines } from '@/lib/mock-data';
 
 const prisma = new PrismaClient();
 
 // GET - Récupérer toutes les chaînes
 export async function GET() {
   try {
-    const chaines = await prisma.chaine.findMany({
-      orderBy: { date_creation: 'desc' },
-      include: {
-        _count: {
-          select: {
-            videos: true,
-            lives: true,
-            plannings: true,
-            abonnements: true
+    let chaines = [];
+    
+    try {
+      chaines = await prisma.chaine.findMany({
+        orderBy: { date_creation: 'desc' },
+        include: {
+          _count: {
+            select: {
+              videos: true,
+              lives: true,
+              plannings: true,
+              abonnements: true
+            }
           }
         }
-      }
-    });
+      });
+    } catch (dbError) {
+      throw dbError; // Remonter l'erreur pour traitement global
+    }
 
     // Transformation des données pour l'interface avec conversion BigInt
     const chainesFormatees = chaines.map(chaine => ({
@@ -52,7 +59,8 @@ export async function GET() {
     console.error('Erreur récupération chaînes:', error);
     return NextResponse.json({
       success: false,
-      error: 'Erreur lors de la récupération des chaînes'
+      error: 'Erreur de connexion à la base de données',
+      data: []
     }, { status: 500 });
   } finally {
     await prisma.$disconnect();

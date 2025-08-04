@@ -1,0 +1,2907 @@
+
+> myflamecompanion@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3003 instead.
+   ▲ Next.js 15.4.2 (Turbopack)
+   - Local:        http://localhost:3003
+   - Network:      http://192.168.159.1:3003
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 19.9s
+   Reload env: .env.local
+   Reload env: .env.local
+   Reload env: .env.local
+   Reload env: .env
+   Reload env: .env
+   Reload env: .env
+ ○ Compiling / ...
+ ✓ Compiled / in 21.8s
+ GET / 200 in 28795ms
+ GET /dashboard 200 in 24732ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 1386ms
+ GET /favicon.ico 200 in 2452ms
+ ○ Compiling /api/rewards/points ...
+ ✓ Compiled /api/rewards/points in 2s
+Erreur récupération points: Error [PrismaClientInitializationError]: 
+Invalid `prisma.points_utilisateur.findUnique()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__4f084e43._.js:176:65
+
+  173     });
+  174 }
+  175 // Récupérer ou créer les points de l'utilisateur
+→ 176 let pointsUtilisateur = await prisma.points_utilisateur.findUnique(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\rewards\points\route.ts:49:60)
+    at async GET (app\api\rewards\points\route.ts:49:28)
+  47 |
+  48 |     // Récupérer ou créer les points de l'utilisateur
+> 49 |     let pointsUtilisateur = await prisma.points_utilisateur.findUnique({
+     |                                                            ^
+  50 |       where: { utilisateur_id: parseInt(utilisateurId) },
+  51 |       include: {
+  52 |         utilisateur: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/rewards/points?utilisateur_id=1 500 in 5554ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 6087ms
+ ✓ Compiled /api/histoire in 482ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1917ms
+ ○ Compiling /api/chaines ...
+ ✓ Compiled /api/chaines in 901ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 6007ms
+ ○ Compiling /api/chaines/videos ...
+ ✓ Compiled /api/chaines/videos in 1928ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 3564ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 4530ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 3785ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 3634ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2664ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2602ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2603ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 2365ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1433ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1931ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1806ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 1383ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 4793ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1053ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1382ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2095ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 3702ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 1755ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2005ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1732ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1594ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2018ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 4112ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2249ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 5900ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2015ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2650ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 988ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1871ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2131ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2553ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2794ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 2171ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2285ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2119ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2356ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 1818ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 5501ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2332ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1582ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1779ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2313ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 1587ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1902ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1279ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1619ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 1874ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 2855ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 3883ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1883ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2471ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 3127ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 2967ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2303ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 4572ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 3040ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 3802ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 1697ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 5061ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2072ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1684ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2044ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 2316ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1678ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2496ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 3502ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 4403ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 4308ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 4072ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2096ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2612ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2983ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 3298ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 5053ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 8500ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 10086ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 5744ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 3452ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 4262ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2597ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2544ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2948ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 6379ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 7479ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2141ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 3311ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 5021ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 1894ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2037ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 3740ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 5957ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 3234ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 9986ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 1943ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 3508ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2729ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 1875ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 2850ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2088ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 3183ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2448ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 3449ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 5550ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2992ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 6376ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 2751ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2274ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 3308ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 3975ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 2503ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1520ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2565ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 6085ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 2577ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 1721ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 1948ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=twitch 500 in 2661ms
+Erreur récupération notifications: Error [PrismaClientInitializationError]: 
+Invalid `prisma.notification.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__756dbfe8._.js:88:55
+
+  85 try {
+  86     let notifications = [];
+  87     try {
+→ 88         notifications = await prisma.notification.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\notification\route.ts:12:48)
+    at async GET (app\api\notification\route.ts:12:22)
+  10 |     
+  11 |     try {
+> 12 |       notifications = await prisma.notification.findMany({
+     |                                                ^
+  13 |         orderBy: {
+  14 |           date_creation: 'desc'
+  15 |         } {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/notification 500 in 1876ms
+Erreur récupération histoires: Error [PrismaClientInitializationError]: 
+Invalid `prisma.histoire.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__5264520f._.js:86:49
+
+  83 const prisma = new __TURBOPACK__imported__module__$5b$externals$5d2f40$prisma$2f$client__$5b$external$5d$__$2840$prisma$2f$client$2c$__cjs$29$__["PrismaClient"]();
+  84 async function GET() {
+  85     try {
+→ 86         const histoires = await prisma.histoire.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\histoire\route.ts:9:44)
+    at async GET (app\api\histoire\route.ts:9:22)
+   7 | export async function GET() {
+   8 |   try {
+>  9 |     const histoires = await prisma.histoire.findMany({
+     |                                            ^
+  10 |       include: {
+  11 |         chapitres: true,
+  12 |         progressions: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/histoire 500 in 3823ms
+Erreur récupération chaînes: Error [PrismaClientInitializationError]: 
+Invalid `prisma.chaine.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__dc55f490._.js:88:43
+
+  85 try {
+  86     let chaines = [];
+  87     try {
+→ 88         chaines = await prisma.chaine.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\route.ts:13:36)
+    at async GET (app\api\chaines\route.ts:13:16)
+  11 |     
+  12 |     try {
+> 13 |       chaines = await prisma.chaine.findMany({
+     |                                    ^
+  14 |         orderBy: { date_creation: 'desc' },
+  15 |         include: {
+  16 |           _count: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines 500 in 3795ms
+Erreur récupération vidéos: Error [PrismaClientInitializationError]: 
+Invalid `prisma.video.findMany()` invocation in
+C:\Users\Sivis\Desktop\Githubx\myflamecompanion\.next\server\chunks\[root-of-the-server]__391025c7._.js:215:41
+
+  212 }
+  213 let videos = [];
+  214 try {
+→ 215     videos = await prisma.video.findMany(
+Error querying the database: FATAL: Tenant or user not found
+    at <unknown> (app\api\chaines\videos\route.ts:112:34)
+    at async GET (app\api\chaines\videos\route.ts:112:15)
+  110 |     
+  111 |     try {
+> 112 |       videos = await prisma.video.findMany({
+      |                                  ^
+  113 |         where: whereClause,
+  114 |         include: {
+  115 |           chaine: { {
+  clientVersion: '6.12.0',
+  errorCode: undefined,
+  retryable: undefined
+}
+ GET /api/chaines/videos?type=youtube 500 in 16270ms

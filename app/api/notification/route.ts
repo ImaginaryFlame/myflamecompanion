@@ -1,28 +1,45 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { mockNotifications } from '@/lib/mock-data';
 
 const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const notifications = await prisma.notification.findMany({
-      include: {
-        utilisateur: true
-      },
-      orderBy: {
-        date_creation: 'desc'
-      }
-    });
+    let notifications = [];
+    
+    try {
+      notifications = await prisma.notification.findMany({
+        orderBy: {
+          date_creation: 'desc'
+        }
+      });
+    } catch (dbError) {
+      throw dbError; // Remonter l'erreur pour traitement global
+    }
+    
+    // Formater les notifications pour correspondre à l'interface frontend
+    const notificationsFormatees = notifications.map(notif => ({
+      id: notif.id,
+      type: notif.type,
+      message: notif.message,
+      lu: notif.lu,
+      date: notif.date_creation.toISOString(),
+      titre: notif.titre
+    }));
+    
     return NextResponse.json({
       success: true,
-      data: notifications,
-      count: notifications.length
+      data: notificationsFormatees,
+      count: notificationsFormatees.length
     });
   } catch (error) {
     console.error('Erreur récupération notifications:', error);
     return NextResponse.json({ 
       success: false, 
-      error: 'Erreur de base de données' 
+      error: 'Erreur de connexion à la base de données',
+      data: [],
+      count: 0
     }, { status: 500 });
   }
 }

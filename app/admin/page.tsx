@@ -149,7 +149,7 @@ export default function AdminPage() {
               href="/admin/centre-controle"
               className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg transform hover:scale-105 transition-all duration-200 inline-block"
             >
-              🎛️ Centre de Contrôle Avancé
+              🎛️ Centre de Contrôle
             </a>
             <p className="text-sm text-gray-500 mt-2">
               Interface moderne avec tous tes outils organisés

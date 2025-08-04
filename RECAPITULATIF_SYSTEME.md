@@ -14,7 +14,7 @@
 - **Votes Live** : http://localhost:3000/live-votes
 
 ### ⚙️ Administration
-- **Centre de Contrôle Admin** : http://localhost:3000/admin/centre-controle
+- **Centre de Contrôle** : http://localhost:3000/admin/centre-controle
 - **Scraping Intelligent** : http://localhost:3000/admin/scraping
 - **Éditeur d'Histoires** : http://localhost:3000/admin/editeur
 - **Visualiseur Avancé** : http://localhost:3000/admin/visualiser

@@ -32,5 +32,5 @@ export function ClientOnly({
     return fallback;
   }
 
-  return <>{children}</>;
+  return children as React.ReactElement;
 }

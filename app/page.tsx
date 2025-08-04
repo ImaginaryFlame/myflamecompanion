@@ -38,8 +38,8 @@ export default function HomePage() {
               className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-colors duration-200 shadow-lg"
             >
               ⚙️ Administration
-            </a>
-          </div>
+          </a>
+        </div>
 
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm">
             <a
@@ -53,14 +53,14 @@ export default function HomePage() {
               className="text-green-500 hover:text-green-700 underline"
             >
               👁️ Visualiser
-            </a>
-            <a
+        </a>
+        <a
               href="/admin/gerer-histoires"
               className="text-orange-500 hover:text-orange-700 underline"
             >
               🗂️ Gérer
-            </a>
-            <a
+        </a>
+        <a
               href="/api/auto-check"
               className="text-purple-500 hover:text-purple-700 underline"
             >
